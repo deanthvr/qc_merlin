@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="Merlin.TimePeriodModule"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:extensionClasses="clr-namespace:Merlin.ExtensionClasses"
+             xmlns:local="clr-namespace:Merlin" 
+             
+             mc:Ignorable="d" 
+             d:DesignHeight="67" d:DesignWidth="470">
+  <Grid Name="mainGrid" Margin="0,2">
+    <Grid.Background>
+      <SolidColorBrush Color="{DynamicResource ComplementaryBackgroundColor}" Opacity="0.4"/>
+    </Grid.Background>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="470"/>
+      <ColumnDefinition/>
+    </Grid.ColumnDefinitions>
+    <!--<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="4" Grid.ColumnSpan="3"/>-->
+    <StackPanel Margin="5,5,5,5" Grid.Column="0">
+      <DockPanel Margin="3,3,3,3" LastChildFill="True" IsEnabled="{Binding ElementName=ActiveCheckBox, Path=IsChecked}" Name="opacity1" Opacity="0.4">
+        <TextBlock x:Name="CountDurationTextIntervals" Text="0 intervals" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,2,0" DockPanel.Dock="Right"/>
+        <TextBlock x:Name="CountDurationTextHrMin" Text="0 hr(s) 0 min(s) | " VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+        <TextBox FontSize="14" FontWeight="Bold" HorizontalAlignment="Stretch" Name="TimePeriodLabel" MinWidth="30" Margin="1" BorderThickness="0" Background="{x:Null}" extensionClasses:SelectTextOnFocus.Active="True" TextChanged="TimePeriodLabel_TextChanged"/>
+      </DockPanel>
+      <StackPanel Orientation="Horizontal" Margin="3,3,3,3" Name="EndTimeStackPanel">
+        <CheckBox VerticalAlignment="Center" Name="ActiveCheckBox" Unchecked="ActiveCheckBox_StateChanged" Checked="ActiveCheckBox_StateChanged" Margin="0,0,5,0"/>
+        <StackPanel Orientation="Horizontal" IsEnabled="{Binding ElementName=ActiveCheckBox, Path=IsChecked}" Name="opacity2" Opacity="0.4">
+          <TextBlock Text="Start:" VerticalAlignment="Center"/>
+          <DatePicker x:Name="StartDatePicker" ToolTip="Count dates can also be set individually in the next screen." SelectedDateFormat="Long" MinWidth="200" HorizontalAlignment="Left" SelectedDateChanged="DatePicker_SelectedDateChanged" GotFocus="StartDatePicker_GotFocus"/>
+          <local:TimePicker x:Name="StartTimePicker"/>
+          <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="3,0,3,0"/>
+          <TextBlock Text="End:" VerticalAlignment="Center"/>
+          <!--<DatePicker x:Name="EndDatePicker" ToolTip="Count dates can also be set individually in the next screen." SelectedDateFormat="Long" MinWidth="200" HorizontalAlignment="Left" SelectedDateChanged="DatePicker_SelectedDateChanged" GotFocus="EndDatePicker_GotFocus"/>-->
+          <local:TimePicker x:Name="EndTimePicker"/>
+        </StackPanel>
+      </StackPanel>
+    </StackPanel>
+  </Grid>
+</UserControl>

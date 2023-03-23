@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="Merlin.DetailsTab.TubeLocationModule"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:c="clr-namespace:Merlin.DetailsTab"
+             xmlns:extensionClasses="clr-namespace:Merlin.ExtensionClasses"
+             mc:Ignorable="d" MinWidth="725">
+  <DockPanel LastChildFill="True">
+    <!--<Grid.ColumnDefinitions>
+      <ColumnDefinition Width="100"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>-->
+    <Grid Name="DeleteGrid" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave" MouseDown="Grid_MouseDown" Width="22" VerticalAlignment="Top">
+      <TextBlock Text="-" Name="DeleteX" FontSize="26" Foreground="#FFF50000" FontFamily="Global Sans Serif" Width="22" 
+                 TextAlignment="Center" Height="32"/>
+    </Grid>
+    <c:TubeSiteConfig DockPanel.Dock="Left" x:Name="tubeDiagram"/>
+    <DockPanel DockPanel.Dock="Top" LastChildFill="True">
+      <Button Name="addVBtn" Content="+V" Margin="2" ToolTip="Add volume only survey" Width="25" Height="25" Cursor="Hand" Click="addTimePeriodBtn_Click"/>
+      <!--<Button Name="addSBtn" Content="+S" Margin="2" ToolTip="Add speed survey" Width="25" Height="25" Cursor="Hand" Click="addTimePeriodBtn_Click"/>-->
+      <Button Name="addCBtn" Content="+C" Margin="2" ToolTip="Add class survey" Width="25" Height="25" Cursor="Hand" Click="addTimePeriodBtn_Click"/>
+      <!--<Button Name="addSCBtn" Content="+SC" Margin="2" ToolTip="Add speed &amp; class survey" Width="25" Height="25" Cursor="Hand" Click="addTimePeriodBtn_Click"/>-->
+      <!--<TextBlock Text="Location:" FontSize="10" VerticalAlignment="Center"/>-->
+      <TextBox x:Name="locationTextBox" extensionClasses:SelectTextOnFocus.Active="True"  Margin="5,2,0,2" FontSize="16" BorderThickness="0" Style="{DynamicResource TextBoxWithHintLocation}" VerticalContentAlignment="Center"/>
+    </DockPanel>
+    <WrapPanel Name="surveyTimesWrapPanel" Orientation="Vertical">
+      
+    </WrapPanel>
+  </DockPanel>
+</UserControl>

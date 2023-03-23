@@ -1,0 +1,1320 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:src="clr-namespace:Merlin"
+        xmlns:extensionClasses="clr-namespace:Merlin.ExtensionClasses"
+        xmlns:scroll="clr-namespace:SoftwareArchitects.Windows.Controls;assembly=SoftwareArchitects.Windows.Controls.ScrollSynchronizer" 
+        x:Class="Merlin.MainWindow"
+        Icon="Resources\Sample Logo\merlin-light-blue-no-text.ico"
+        Title="Merlin" WindowState="Maximized" Width="1500" Height="750"
+        Closing="MainWindow_Closing">
+
+  <Window.Resources>
+    <ResourceDictionary>
+      <FrameworkElement x:Key="CursorGrab" Cursor="Resources/Cursors/grab.cur"/>
+      <FrameworkElement x:Key="CursorGrabbing" Cursor="Resources/Cursors/grabbing.cur"/>
+      <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+      <ToolTip x:Key="bankComboBoxTooltip" DataContext="{Binding Path=PlacementTarget, RelativeSource={x:Static RelativeSource.Self}}">
+        Choose the vehicle type for this bank, or choose "NOT USED" to deactivate the bank
+      </ToolTip>
+      <ToolTip x:Key="pedColumnComboBoxTooltip" DataContext="{Binding Path=PlacementTarget, RelativeSource={x:Static RelativeSource.Self}}">
+        Choose what will be counted in the ped column for this bank, or choose "NA" to deactivate the ped column for this bank
+      </ToolTip>
+    </ResourceDictionary>
+  </Window.Resources>
+
+  <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="EntireWindowGrid" Button.Click="ButtonHandler">
+    <Grid Name="mainGrid">
+      <Menu Name="mainMenu" Height="22" VerticalAlignment="Top" Margin="0,0,0,0" HorizontalAlignment="Stretch">
+        <MenuItem Header="_FILE">
+          <MenuItem Header="_New Project">
+            <MenuItem Header="_From Scratch" Click="MenuNewScratch_Click"/>
+            <MenuItem Header="_From QC Web" Click="MenuNewWeb_Click"/>
+          </MenuItem>
+          <MenuItem Header="_Open Project" Click="MenuOpen_Click"/>
+          <MenuItem Header="_Recent Projects" x:Name="recentProjectsMenuItem"/>
+          <MenuItem Header="_Close Project" Click="MenuClose_Click"/>
+          <MenuItem Header="_Save Project" Click="MenuSave_Click"/>
+          <MenuItem Header="S_ave As" Click="MenuSaveAs_Click"/>
+          <Separator/>
+          <MenuItem Header="_Print" IsEnabled="False"/>
+          <Separator/>
+          <MenuItem Header="_Exit" Click="MenuExit_Click"/>
+        </MenuItem>
+        <MenuItem Header="_EDIT">
+          <MenuItem Command="ApplicationCommands.Undo" Header="_Undo"/>
+          <MenuItem Command="ApplicationCommands.Redo" Header="_Redo"/>
+          <Separator/>
+          <MenuItem Command="ApplicationCommands.Cut" Header="Cu_t"/>
+          <MenuItem Command="ApplicationCommands.Copy" Header="_Copy"/>
+          <MenuItem Command="ApplicationCommands.Paste" Header="_Paste"/>
+          <Separator/>
+          <MenuItem Command="SelectAll" Header="_Select All"/>
+        </MenuItem>
+        <MenuItem Header="_PROJECT">
+          <MenuItem Header="_TMCs" >
+            <MenuItem Header="_Import Data Files" Click="ImportDataFiles_Click">
+            <MenuItem.Icon>
+              <Image>
+                <Image.Style>
+                  <Style>
+                      <Setter Property="Image.Source" Value="Resources\Icons\add_list-48.png" />
+                  </Style>
+                </Image.Style>
+              </Image>
+            </MenuItem.Icon>
+          </MenuItem>
+          <MenuItem Header="Import _Test Counts" Click="MenuTestCounts_Click">
+            <MenuItem.Icon>
+              <Image>
+                <Image.Style>
+                  <Style>
+                      <Setter Property="Image.Source" Value="Resources\Icons\falcon-48.png" />
+                  </Style>
+                </Image.Style>
+              </Image>
+            </MenuItem.Icon>
+          </MenuItem>
+            <MenuItem Header="_Export &amp; Convert" Click="ExportConvert_Click" Name="export" >
+              <MenuItem.Icon>
+                <Image>
+                  <Image.Style>
+                    <Style>
+                      <Setter Property="Image.Source" Value="Resources\Icons\play_property-48.png" />
+                    </Style>
+                  </Image.Style>
+                </Image>
+              </MenuItem.Icon></MenuItem>
+          </MenuItem>
+          <MenuItem Header="_Tubes" >
+            <MenuItem Header="_Web Database Data Import" Click="TubeQuery_Click">
+            <MenuItem.Icon>
+              <Image>
+                <Image.Style>
+                  <Style>
+                      <Setter Property="Image.Source" Value="Resources\Icons\data_recovery-48.png" />
+                  </Style>
+                </Image.Style>
+              </Image>
+            </MenuItem.Icon>
+          </MenuItem>
+            <MenuItem Header="_Batch Import ASCII Data Files" Click="ImportTubeDataFiles_Click">
+            <MenuItem.Icon>
+              <Image>
+                <Image.Style>
+                  <Style>
+                      <Setter Property="Image.Source" Value="Resources\Icons\add_list-48.png" />
+                  </Style>
+                </Image.Style>
+              </Image>
+            </MenuItem.Icon>
+          </MenuItem>
+          </MenuItem>
+          <Separator/>
+          <MenuItem Header="_Print Notes" Click="PrintNotes_Click" />
+          <Separator/>
+          <MenuItem Header="_Settings" Click="OpenSettings_Click"/>
+        </MenuItem>
+        <MenuItem Header="_MISC">
+          <MenuItem Header="About Merlin" Click="AboutMerlin_Click"/>
+        </MenuItem>
+      </Menu>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,33,20,0">
+        <TextBlock Name="userText"  Opacity=".5" Margin="0,0,60,0"/>
+        <TextBlock Name="versionText" HorizontalAlignment="Right" Opacity=".5" />
+      </StackPanel>
+      <TabControl x:Name="NavTabs" HorizontalAlignment="Stretch" Margin="0,22,0,2" VerticalAlignment="Stretch" SelectionChanged="NavTabs_SelectionChanged">
+        <TabItem x:Name="DetailsTab" Style="{DynamicResource LargeTabItemStyle}" PreviewMouseLeftButtonDown="DetailsTab_LeftMouseClicked">
+          <TabItem.Header>
+            <Label Content="Project Details" Style="{DynamicResource LargeTabItemLabel}"/>
+          </TabItem.Header>
+          <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <DockPanel LastChildFill="True">
+              <GroupBox Header="Project Details" DockPanel.Dock="Top" Style="{DynamicResource GroupBoxStyleBase}">
+                <DockPanel LastChildFill="True" Margin="5" Height="40">
+                  <StackPanel Name="ProjectOrderNumPanel" Orientation="Horizontal" DockPanel.Dock="Left" >
+                    <!-- <TextBlock Text="Order Number:" FontSize="11" Margin="0,0,10,0" VerticalAlignment="Center"/> -->
+                    <TextBox Style="{DynamicResource TextBoxWithHintOrder}" Name="OrderNumTextBox" MaxLength="6" Width="160" extensionClasses:SelectTextOnFocus.Active="True" 
+                             TextChanged="NumericTextBox_TextChanged" GotFocus="NumericTextBox_GotFocus" VerticalAlignment="Center" FontSize="30" Margin="8,0,0,0"
+                             BorderThickness="0" VerticalContentAlignment="Center" ToolTip="Six-digit Order Number generated in QC online project database" />
+                  </StackPanel>
+                  <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0" DockPanel.Dock="Right" Name="manageProjects">
+                    <Button Name="Edit_Cancel" Width="150" Content="Cancel" Margin="0,2,1,2" IsTabStop="False" Click="Edit_Cancel_Click"/>
+                    <Button Name="NextScreen_Customize" Width="150" Content="Create Project" Margin="1,2,2,2" IsTabStop="False" Click="NextScreen_Customize_Click"/>
+                  </StackPanel>
+                  <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="10,0" DockPanel.Dock="Left"/>
+                  <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0" DockPanel.Dock="Right"/>
+                  <DockPanel Name="ProjectNamePanel" ToolTip="Name of project, e.g., &quot;Milpitas TMCs&quot;" LastChildFill="True">
+                    <!-- <TextBlock Text="Project Name:" FontSize="11" Margin="0,0,10,0" DockPanel.Dock="Left" VerticalAlignment="Center"/>-->
+                    <TextBox Name="ProjectNameTextBox" MinWidth="150" extensionClasses:SelectTextOnFocus.Active="True" VerticalAlignment="Center" 
+                             FontSize="30" BorderThickness="0" VerticalContentAlignment="Center" Style="{DynamicResource TextBoxWithHintProject}"/>
+                  </DockPanel>
+                </DockPanel>
+              </GroupBox>
+
+              <TabControl TabStripPlacement="Left">
+                <TabItem Name="TMCTab">
+                  <TabItem.Header>
+                    <StackPanel Orientation="Vertical" >
+                      <TextBlock Text="TMCs" Style="{DynamicResource SectionHeaders }" FontWeight="Bold" Foreground="Navy" FontSize="20" HorizontalAlignment="Center"/>
+                      <Image Source="Resources/camcorder.png" Height="28" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    <!--<Label Content="TMCs" Style="{DynamicResource SmallTabItemLabel}"/>-->
+                  </TabItem.Header>
+
+                  <DockPanel Name="TMC_Panel" LastChildFill="True">
+                    <DockPanel Name="TMCDetailsAndTPs_Panel" LastChildFill="True" DockPanel.Dock="Left">
+                      <StackPanel DockPanel.Dock="Top">
+                        <DockPanel LastChildFill="True">
+                          <StackPanel DockPanel.Dock="Left" Name="projectDetailButtons">
+                            <extensionClasses:MerlinButton x:Name="detailsTabImportDetailsButton" ToolTip="Import project details from QC web database" Margin="5,0,5,1" 
+                            Style="{DynamicResource WideButton}" ImageSource="Resources\Icons\download_from_cloud-48.png" Content="Web Import" Click="detailsTabImportDetailsButton_Click"/>
+                            <extensionClasses:MerlinButton x:Name="detailsTabApplyBankPresetButton" ToolTip="Choose a preset to autofill banks" Margin="5,0,5,1" 
+                            Style="{DynamicResource WideButton}" ImageSource="Resources\Icons\ground_transportation-48.png" Content="Bank Preset" Click="detailsTabApplyBankPresetButton_Click"/>
+                            <Border Name="columnSwapArea" BorderBrush="Black" BorderThickness="0" Width="60" Height="40">
+                              <StackPanel VerticalAlignment="Center" ToolTipService.ShowOnDisabled="True" ToolTip="This will swap data in ped columns between bank 0 and bank 2 upon importing count files.">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                  <Image Source="Resources\Images\ncdot.png" Width="24" Height="24"/>
+                                  <StackPanel VerticalAlignment="Center">
+                                    <CheckBox Name="ncdotColSwapCheckBox" HorizontalAlignment="Center" Checked="ncdotColSwapCheckBox_Checked"/>
+                                    <!--<Image Name="ncdotHelp" Source="Resources\Icons\help-24.png" Width="15" Height="15" HorizontalAlignment="Center" Cursor="Hand" MouseDown="ncdotHelp_MouseDown"/>-->
+                                  </StackPanel>
+                                </StackPanel>
+                                <TextBlock Text="Column Swap" FontSize="9" Margin="0,-4,0,0" HorizontalAlignment="Center"/>
+                              </StackPanel>
+                            </Border>
+                            <Border Name="tccArea" BorderBrush="Black" BorderThickness="0" Width="60" Height="40">
+                              <StackPanel VerticalAlignment="Center" ToolTipService.ShowOnDisabled="True" ToolTip="This will change possible bank selections to FHWA vehicle types only and will import data files using turn-class rules.">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                  <Image Source="Resources\Images\fhwa.png" Width="24" Height="24"/>
+                                  <StackPanel VerticalAlignment="Center">
+                                    <CheckBox Name="tccCheckBox" HorizontalAlignment="Center" Checked="tccCheckBox_Checked" Unchecked="tccCheckBox_Unchecked" />
+                                  </StackPanel>
+                                </StackPanel>
+                                <TextBlock Text="Turn Class" FontSize="9" Margin="0,-4,0,0" HorizontalAlignment="Center"/>
+                              </StackPanel>
+                            </Border>
+                          </StackPanel>
+                          <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Visible"  Name="BanksListScrollViewer" Height="162">
+                            <ItemsControl Margin="0" Name="BanksList" Padding="0" PreviewMouseWheel="BubbleUp_PreviewMouseWheel" KeyboardNavigation.TabNavigation="Cycle">
+                            </ItemsControl>
+                          </ScrollViewer>
+                        </DockPanel>
+                      </StackPanel>
+                      <DockPanel Margin="5" LastChildFill="True">
+                        <StackPanel Name="AddTimePeriodButton" DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Left" MouseEnter="AddTimePeriodButton_MouseEnter" MouseLeave="AddTimePeriodButton_MouseLeave" PreviewMouseDown="AddTimePeriodButton_PreviewMouseDown">
+                          <TextBlock Name="addPlusTP" Text="+" FontSize="26" Foreground="#FF00A60F" FontFamily="Global Sans Serif" Width="22" VerticalAlignment="Bottom" TextAlignment="Center" Height="32"/>
+                          <TextBlock Name="AddTimePeriodText" Text="Add Time Period..." VerticalAlignment="Bottom" FontSize="16" Height="29"/>
+                        </StackPanel>
+                        <ScrollViewer Name="TimePeriodScrollViewer" DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" Padding="0">
+                          <ItemsControl Margin="0" Name="TimePeriodList" Padding="0" PreviewMouseWheel="BubbleUp_PreviewMouseWheel" KeyboardNavigation.TabNavigation="Cycle" PreviewKeyDown="TimePeriodList_PreviewKeyDown">
+                          </ItemsControl>
+                        </ScrollViewer>
+                      </DockPanel>
+                    </DockPanel>
+                    <GroupBox Grid.Column="2" Grid.RowSpan="3" Margin="5,0,5,0" Header="TMC Locations" Name="UpDownButtons" Style="{DynamicResource GroupBoxStyleBase}">
+                      <DockPanel LastChildFill="True">
+                        <StackPanel Orientation="Vertical" Margin="0" DockPanel.Dock="Top">
+                          <StackPanel Name="ManageLocationsGroupBox" Orientation="Horizontal" Margin="0" DockPanel.Dock="Top">
+                            <extensionClasses:MerlinButton x:Name="Down" Style="{DynamicResource NoTextButton}" ImageSource="Resources\Icons\chevron_down-48.png" Margin="2,2,1,2" Click="DownOrUp_Click" ToolTip="Move the selected location down in the list"/>
+                            <extensionClasses:MerlinButton x:Name="Up" Style="{DynamicResource NoTextButton}" ImageSource="Resources\Icons\chevron_up-48.png" Margin="1,2,2,2" Click="DownOrUp_Click" ToolTip="Move the selected location up in the list"/>
+                            <Separator Name="manageLocationsSeparator1" Style="{DynamicResource VerticalSeparator}" />
+                            <extensionClasses:MerlinButton x:Name="RegenerateSideCodes" Style="{DynamicResource NoTextButton}" Margin="2" ImageSource="Resources\Icons\rotate_right-48.png" Click="RegenerateSideCodes_Click" ToolTip="Regenerates site codes based on current selections"/>
+
+                            <Separator Name="manageLocationsSeparator2" Style="{DynamicResource VerticalSeparator}" />
+                            <StackPanel Name="collapseExpandPanel" Orientation="Horizontal" VerticalAlignment="Center">
+                              <TextBlock Text="View:" VerticalAlignment="Center" Margin="2"/>
+                              <RadioButton Name="locationsCondensedRadio" Content="Collapse" GroupName="locationViews" Style="{DynamicResource RadioButtonBaseStyle}" Margin="2" VerticalAlignment="Center" IsChecked="True" Checked="locationsCondensedRadio_Checked"/>
+                              <RadioButton Name="locationsExpandedRadio" Content="Expand" GroupName="locationViews" Style="{DynamicResource RadioButtonBaseStyle}" Margin="2" VerticalAlignment="Center" Checked="locationsExpandedRadio_Checked"/>
+
+                            </StackPanel>
+                          </StackPanel>
+                        </StackPanel>
+                        <ScrollViewer Name="LocListScrollviewer" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
+                          <DockPanel LastChildFill="True">
+                            <ListBox Margin="2" Name="LocationListBox" Grid.Column="1" PreviewMouseWheel="BubbleUp_PreviewMouseWheel" KeyboardNavigation.TabNavigation="Cycle" Focusable="False">
+                              <ListBoxItem Name="AddLocListBoxItem" ToolTip="'ctrl +'" MouseEnter="ListBoxItem_MouseEnter" MouseLeave="ListBoxItem_MouseLeave" PreviewMouseDown="ListBoxItem_MouseDown">
+                                <StackPanel Orientation="Horizontal">
+                                  <TextBlock Text="+" Name="AddPlus" FontSize="26" Foreground="#FF00A60F" FontFamily="Global Sans Serif" Width="22" TextAlignment="Center" Height="32"/>
+                                  <TextBlock Text="Add Location..." Name="AddLocation" VerticalAlignment="Bottom" FontSize="16" Height="29"/>
+                                </StackPanel>
+                              </ListBoxItem>
+                            </ListBox>
+                          </DockPanel>
+                        </ScrollViewer>
+                      </DockPanel>
+                    </GroupBox>
+                  </DockPanel>
+                </TabItem>
+                <TabItem Name="TubeTab">
+                  <TabItem.Header>
+                    <!--<Image Source="Resources/TubeEBWB.png" Width="50" Height="50"/>-->
+                    <StackPanel>
+                      <TextBlock Text="Tubes" Style="{DynamicResource SectionHeaders }" FontWeight="Bold" Foreground="Navy" FontSize="20" HorizontalAlignment="Center"/>
+                      <Image Source="Resources/tube2.png" Width="60" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    <!--<Label Content="Tubes" Style="{DynamicResource SmallTabItemLabel}"/>-->
+                  </TabItem.Header>
+                  <GroupBox Grid.Column="2" Grid.RowSpan="3" Margin="5,0,5,0" Header="Tube Locations" Name="TubeUpDownButtons" Style="{DynamicResource GroupBoxStyleBase}">
+                    <DockPanel LastChildFill="True" Name="TubePanel">
+                      <DockPanel Margin="0" DockPanel.Dock="Top">
+                        <StackPanel Name="ManageTubeLocationsGroupBox" Orientation="Horizontal" Margin="0" DockPanel.Dock="Left">
+                          <extensionClasses:MerlinButton x:Name="RegenSiteCodesBtnTubeTab" Style="{DynamicResource NoTextButton}" Margin="2" ImageSource="Resources\Icons\rotate_right-48.png" Click="RegenerateSideCodes_Click" ToolTip="Regenerates site codes based on current selections"/>
+                          <ToggleButton x:Name="SeparateTubeOrderNumCheckBox" Content="Different Tube Order Number" Checked="SeparateTubeOrderNumCheckBox_Checked" Unchecked="SeparateTubeOrderNumCheckBox_Unchecked" ToolTip="When checked, tubes be assigned a different order number than TMCs.">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="26"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <TextBlock VerticalAlignment="Center" FontSize="14" Text="Different Tube Order Number" Name="DiffTubeOrderText" MouseDown="DiffTubeOrderText_MouseDown"/>
+                          <StackPanel Name="TubeOrderNumPanel" Orientation="Horizontal" ToolTip="Enter different tube order number here" Visibility="{Binding ElementName=SeparateTubeOrderNumCheckBox, Path=IsChecked, Converter={StaticResource BoolToVis}}" Margin="5,0,0,0">
+                            <TextBox Name="TubeOrderNumTextBox" FontSize="16" MaxLength="6" Width="70" extensionClasses:SelectTextOnFocus.Active="True" TextChanged="NumericTextBox_TextChanged" GotFocus="NumericTextBox_GotFocus" VerticalAlignment="Center"/>
+                          </StackPanel>
+                        </StackPanel>
+                        <TextBlock Text="V = Volume Only | C = Class" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
+                      </DockPanel>
+                      <ScrollViewer Name="TubeLocListScrollviewer" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+                        <ListBox Margin="2" Name="TubeLocationListBox" PreviewMouseWheel="BubbleUp_PreviewMouseWheel" KeyboardNavigation.TabNavigation="Cycle" Focusable="False">
+                          <ListBoxItem Name="AddTubeLocListBoxItem" ToolTip="'ctrl +'" MouseEnter="ListBoxItem_MouseEnter" MouseLeave="ListBoxItem_MouseLeave"  PreviewMouseDown="AddTubeLocListBoxItem_PreviewMouseDown">
+                            <StackPanel Orientation="Horizontal">
+                              <TextBlock Text="+" Name="TubeAddPlus" FontSize="26" Foreground="#FF00A60F" FontFamily="Global Sans Serif" Width="22" TextAlignment="Center" Height="32"/>
+                              <TextBlock Text="Add Location..." Name="TubeAddLocation" VerticalAlignment="Bottom" FontSize="16" Height="29"/>
+                            </StackPanel>
+                          </ListBoxItem>
+                        </ListBox>
+                      </ScrollViewer>
+                    </DockPanel>
+                  </GroupBox>
+                </TabItem>
+              </TabControl>
+
+
+            </DockPanel>
+          </ScrollViewer>
+        </TabItem>
+        <TabItem x:Name="DataTab" Loaded="DataTab_Loaded" Style="{DynamicResource LargeTabItemStyle}" PreviewMouseLeftButtonDown="DataTab_Selected" >
+          <TabItem.Header>
+            <Label Content="TMC Data" Style="{DynamicResource LargeTabItemLabel}"/>
+          </TabItem.Header>
+          <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Grid>
+              <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <StackPanel  DockPanel.Dock="Top" Orientation="Horizontal">
+                  <extensionClasses:MerlinButton x:Name="dataTabExpandAllButton" ToolTip="Expand All Locations" 
+                            HorizontalAlignment="Left" Style="{DynamicResource WideButton}" Margin="10,4,5,4" 
+                            ImageSource="Resources\Icons\expand-48.png" Content="Expand All" Click="DataTabExpand_Click"/>
+                  <extensionClasses:MerlinButton x:Name="dataTabCollapseAllButton" ToolTip="Collapse All Locations" 
+                            HorizontalAlignment="Left" Style="{DynamicResource WideButton}" Margin="10,4,5,4" 
+                            ImageSource="Resources\Icons\collapse-48.png" Content="Collapse All"   Click="DataTabCollapse_Click"/>
+                  <Grid Width="5"/>
+                  <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                  <Grid Width="4"/>
+                  <extensionClasses:MerlinButton x:Name="gatherDataButton"  ToolTip="Batch Import TMC Count Data" HorizontalAlignment="Left" 
+                               Style="{DynamicResource WideButton}" ImageSource="Resources\Icons\add_list-48.png" Content="Batch Import" 
+                               Margin="6,4,2,4" Click="ImportDataFiles_Click"/>
+                  <Grid Width="8"/>
+                  <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                  <Grid Width="7"/>
+                  <extensionClasses:MerlinButton x:Name="rotateCountButton" ToolTip="Open Rotation Wizard For this Count" 
+                                                 HorizontalAlignment="Left" Margin="4,4,5,4" Content="Rotate"
+                                                 ImageSource="Resources\Icons\rotate_right-48.png" Click="RotateData_Click" />
+                  <extensionClasses:MerlinButton x:Name="dataTabPrintCountButton" ToolTip="Print Count Data" HorizontalAlignment="Left" 
+                                                 Content="Print" Margin="10,4,5,4" Click="DataTabPrintCount_Click"
+                                                 ImageSource="Resources\Icons\print-48.png" />
+                  <extensionClasses:MerlinButton x:Name="dataTabClearDataButton" ToolTip="Clear All Count Data" HorizontalAlignment="Left" 
+                                                 Content="Clear Data" Margin="10,4,5,4" Click="DataTabClearData_Click"
+                                                 ImageSource="Resources\Icons\broom-48.png" />
+                </StackPanel>
+                <DockPanel DockPanel.Dock="Top" >
+                  <StackPanel Orientation="Vertical" DockPanel.Dock="Left" Width="350" VerticalAlignment="Stretch">
+                    <TreeView x:Name="dataTabTreeList" Height="531" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectedItemChanged="DataTabCountSelect_Changed"/>
+                    <StackPanel Orientation="Horizontal" Height="37">
+                      <extensionClasses:MerlinButton x:Name="dataTabViewCountFileButton"  ToolTip="View Data for this File" 
+                                        HorizontalAlignment="Left" Style="{DynamicResource NoTextButton}" 
+                                        ImageSource="Resources\Icons\view_file-48.png" Margin="10,4,5,4" Click="DataTabViewFile_Click"/>
+                      <extensionClasses:MerlinButton x:Name="dataTabAddCountFileButton"  ToolTip="Add File for this Count" 
+                                        HorizontalAlignment="Left" Style="{DynamicResource NoTextButton}" 
+                                        ImageSource="Resources\Icons\add_file-48.png" Margin="10,4,5,4" Click="DataTabAddFile_Click"/>
+                      <extensionClasses:MerlinButton x:Name="dataTabRemoveCountFileButton" ToolTip="Remove the Selected File from the Project" 
+                                        HorizontalAlignment="Left" Style="{DynamicResource NoTextButton}" 
+                                        ImageSource="Resources\Icons\cancel_file-48.png" Margin="10,4,5,4" Click="DataTabRemoveFile_Click"/>
+                      <extensionClasses:MerlinButton x:Name="dataTabChangeCountFileButton" ToolTip="Associate this file with a different site code" 
+                                        HorizontalAlignment="Left" Style="{DynamicResource NoTextButton}" 
+                                        ImageSource="Resources\Icons\export-48.png" Margin="10,4,5,4" Click="DataTabChangeCountFile_Click"/>
+                    </StackPanel>
+                    <ListBox x:Name="dataTabFileList" Height="160" ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                             PreviewKeyDown="DataTabFileListKey_Press" SelectionChanged="DataTabFileListSelection_Changed" 
+                             MouseDoubleClick="DataTabFileName_DoubleClick"/>
+                  </StackPanel>
+                  <StackPanel Orientation="Vertical">
+                    <TextBlock x:Name="dataTabNameOfSelectedData" HorizontalAlignment="Left" Width="Auto" Height="40"
+                              FontWeight="Bold" FontSize="24"/>
+                    <TabControl x:Name="dataBankTabs" DockPanel.Dock="Top" Height="Auto" Width="852" HorizontalAlignment="Left" SelectionChanged="DataTabBankTab_Changed">
+                      <!-- TabItems are generated in code since Banks are dynamic-->
+                    </TabControl>
+                    <StackPanel Orientation="Horizontal">
+                      <DataGrid DockPanel.Dock="Top" x:Name="dataTabData" Style="{DynamicResource DataGridStyleBase}" 
+                              Loaded="DataTabDataGrid_Loaded" PreviewKeyDown="DataGridHandleKeyPress" 
+                              SelectedCellsChanged="DataTabCellSelection_Changed" CellEditEnding="DataTabCellEdit_End" 
+                              ScrollViewer.VerticalScrollBarVisibility="Disabled" >
+                        <DataGrid.ColumnHeaderStyle >
+                          <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource  ColumnHeaderStyle}">
+                            <EventSetter Event="PreviewMouseDown" Handler="DataTabColumnHeader_Click"/>
+                          </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.Resources>
+                          <Style TargetType="ScrollViewer">
+                            <Setter Property="scroll:ScrollSynchronizer.ScrollGroup" Value="dataTabGrids" />
+                          </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.CommandBindings>
+                          <CommandBinding Command="ApplicationCommands.Paste" Executed="DataTabPaste_Executed" />
+                          <CommandBinding Command="ApplicationCommands.Undo" Executed="DataTabUndo_Executed" />
+                          <CommandBinding Command="ApplicationCommands.Redo" Executed="DataTabRedo_Executed" />
+                          <CommandBinding Command="ApplicationCommands.Cut" Executed="DataTabCut_Executed" />
+                          <CommandBinding Command="ApplicationCommands.SelectAll" Executed="SelectAll_Executed" />
+                        </DataGrid.CommandBindings>
+                        <DataGrid.ContextMenu>
+                          <ContextMenu >
+                            <MenuItem Command="ApplicationCommands.Cut" Header="Cu_t"/>
+                            <MenuItem Command="ApplicationCommands.Copy" Header="_Copy"/>
+                            <MenuItem Command="ApplicationCommands.Paste" Header="_Paste"/>
+                            <Separator/>
+                            <MenuItem Command="ApplicationCommands.Undo" Header="_Undo"/>
+                            <MenuItem Command="ApplicationCommands.Redo" Header="_Redo"/>
+                          </ContextMenu>
+                        </DataGrid.ContextMenu>
+                      </DataGrid>
+                      <DataGrid DockPanel.Dock="Top" Style="{DynamicResource RowSumStyle}" 
+                              x:Name="dataTabRowSumGrid" >
+                        <DataGrid.Resources>
+                          <Style TargetType="ScrollViewer">
+                            <Setter Property="scroll:ScrollSynchronizer.ScrollGroup" Value="dataTabGrids" />
+                          </Style>
+                        </DataGrid.Resources>
+                      </DataGrid>
+
+
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" >
+                      <DataGrid DockPanel.Dock="Top" Style="{DynamicResource ColumnSumStyle}" 
+                              x:Name="dataTabColumnSumGrid" Loaded="dataTabColumnSumGrid_Loaded"/>
+                      <TextBlock x:Name="dataTabCountSum" HorizontalAlignment="Right" TextAlignment="Right" Height="18" Width="50" FontWeight="Bold" />
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Top" >
+                      <TextBlock x:Name="dataTabSelectionSum" HorizontalAlignment="Left" Margin="4,2,4,2" Width="Auto"/>
+                      <TextBlock x:Name="dataTabStatusMessage" HorizontalAlignment="Left" Margin="2,2,2,2" Height="NaN" Width="350"/>
+                    </StackPanel>
+                    <TextBlock Style="{DynamicResource SectionHeaders}" Text="Data Tab Notes: " Margin="2,2,2,2" />
+                    <StackPanel Name="dataTabNotesPanel" Margin="2,2,2,2" />
+                  </StackPanel>
+                </DockPanel>
+              </DockPanel>
+            </Grid>
+          </ScrollViewer>
+        </TabItem>
+        <TabItem x:Name="BalancingTab" Style="{DynamicResource LargeTabItemStyle}" PreviewMouseLeftButtonDown="BalancingTab_LeftMouseClicked" Loaded="BalancingTab_Enabled">
+          <TabItem.Header>
+            <Label Content="Balancing" Style="{DynamicResource LargeTabItemLabel}"/>
+          </TabItem.Header>
+          <Grid>
+            <DockPanel LastChildFill="True">
+              <DockPanel HorizontalAlignment="Left" LastChildFill="True" VerticalAlignment="Top" DockPanel.Dock="Top">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                  <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Height="83">
+                    <StackPanel Orientation="Vertical" Margin="3,0,0,0">
+                      <TextBlock Text="Time Period" Style="{DynamicResource SectionHeaders}"/>
+                      <StackPanel Orientation="Horizontal" Width="Auto">
+                        <WrapPanel Orientation="Vertical" Name="BalancingTabTPRadiosWrapPanel" Height="50">
+                          <RadioButton Content="AM" Name="AM_RadioButton" GroupName="TPs" MinWidth="45" Checked="Balancing_TPRadioButton_Checked" Style="{DynamicResource RadioButtonBaseStyle}"/>
+                          <RadioButton Content="MID" Name="MID_RadioButton" GroupName="TPs" MinWidth="45" Checked="Balancing_TPRadioButton_Checked" Style="{DynamicResource RadioButtonBaseStyle}"/>
+                          <RadioButton Content="PM" Name="PM_RadioButton" GroupName="TPs" MinWidth="45" Checked="Balancing_TPRadioButton_Checked" Style="{DynamicResource RadioButtonBaseStyle}"/>
+                          <RadioButton Content="C1" Name="C1_RadioButton" GroupName="TPs" MinWidth="45" Checked="Balancing_TPRadioButton_Checked" Style="{DynamicResource RadioButtonBaseStyle}"/>
+                          <RadioButton Content="C3" Name="C3_RadioButton" GroupName="TPs" MinWidth="45" Checked="Balancing_TPRadioButton_Checked" Style="{DynamicResource RadioButtonBaseStyle}"/>
+                          <RadioButton Content="C4" Name="C4_RadioButton" GroupName="TPs" MinWidth="45" Checked="Balancing_TPRadioButton_Checked" Style="{DynamicResource RadioButtonBaseStyle}"/>
+                          <RadioButton Content="C5" Name="C5_RadioButton" GroupName="TPs" MinWidth="45" Checked="Balancing_TPRadioButton_Checked" Style="{DynamicResource RadioButtonBaseStyle}"/>
+                        </WrapPanel>
+                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0"/>
+                        <StackPanel VerticalAlignment="Center">
+                          <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                            <TextBlock Text="First" Width="18" TextAlignment="Right" VerticalAlignment="Center" Margin="0,2,2,0" Style="{DynamicResource SectionHelpers}"/>
+                            <ComboBox Name="FirstInterval" Width="75" SelectionChanged="BalancingComboBox_SelectionChanged" Style="{DynamicResource RoundedAll}"/>
+                          </StackPanel>
+                          <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock Text="Last" Width="18" TextAlignment="Right" VerticalAlignment="Center" Margin="0,2,2,0" Style="{DynamicResource SectionHelpers}"/>
+                            <ComboBox Name="LastInterval" Width="75" SelectionChanged="BalancingComboBox_SelectionChanged" Style="{DynamicResource RoundedAll}"/>
+                          </StackPanel>
+                        </StackPanel>
+                        <StackPanel Height="50">
+                          <RadioButton Name="rangeTypeCustom" Content="Custom" GroupName="rangeType" Margin="5,0,0,0" IsChecked="True" Checked="RangeTypeRadioButton_Checked" Style="{DynamicResource RadioButtonBaseStyle}"/>
+                          <WrapPanel Orientation="Vertical" Height="33">
+                            <RadioButton Name="rangeType15Min" Content="15 Min" GroupName="rangeType" Margin="5,0,0,0" Checked="RangeTypeRadioButton_Checked" Style="{DynamicResource RadioButtonBaseStyle}"/>
+                            <RadioButton Name="rangeTypeHour" Content="Hour" GroupName="rangeType" Margin="5,0,0,0" Checked="RangeTypeRadioButton_Checked" Style="{DynamicResource RadioButtonBaseStyle}"/>
+                            <TextBlock Name="calculatePeak15" Margin="5,0,0,0" PreviewMouseDown="peakRadioButton_PreviewMouseDown" ToolTip="Set 15 minute interval range to the current system-wide peak 15 minutes. Note: This is static and will not automatically update if data changes.">
+                              <Hyperlink FontSize="11">Peak 15 Min</Hyperlink>
+                            </TextBlock>
+                            <TextBlock Name="calculatePeakHour" Margin="5,0,0,0" PreviewMouseDown="peakRadioButton_PreviewMouseDown" ToolTip="Set one hour interval range to the current system-wide peak hour. Note: This is static and will not automatically update if data changes.">
+                              <Hyperlink FontSize="11">Peak Hour</Hyperlink>
+                            </TextBlock>
+                            <!--<RadioButton Name="rangeTypePeak15" Content="Peak 15 Min" GroupName="rangeType" Margin="5,0,0,0" Checked="RangeTypeRadioButton_Checked" PreviewMouseDown="peakRadioButton_PreviewMouseDown" Style="{DynamicResource RadioButtonBaseStyle}"/>
+                            <RadioButton Name="rangeTypePeakHour" Content="Peak Hour" GroupName="rangeType" Margin="5,0,0,0" Checked="RangeTypeRadioButton_Checked" PreviewMouseDown="peakRadioButton_PreviewMouseDown" Style="{DynamicResource RadioButtonBaseStyle}"/>-->
+                          </WrapPanel>
+                        </StackPanel>
+                      </StackPanel>
+                    </StackPanel>
+                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"  Margin="5,0" Width="1" Background="{DynamicResource SectionHeaderFontColor}"/>
+                    <StackPanel Orientation="Vertical" Width="Auto">
+                      <TextBlock Text="Traffic Type" Style="{DynamicResource SectionHeaders}"/>
+                      <StackPanel Orientation="Horizontal" Name="BalancingBanksStackPanel">
+                        <WrapPanel Orientation="Vertical" Height="50" Name="BalancingVehBanksWrapPanel">
+                          <CheckBox Content="Bank 0" Name="IncludeBank0CheckBox" MinWidth="60" Checked="BalancingBankCheckBox_Changed" Unchecked="BalancingBankCheckBox_Changed"/>
+                          <CheckBox Content="Bank 1" Name="IncludeBank1CheckBox" MinWidth="60" Checked="BalancingBankCheckBox_Changed" Unchecked="BalancingBankCheckBox_Changed"/>
+                          <CheckBox Content="Bank 2" Name="IncludeBank2CheckBox" MinWidth="60" Checked="BalancingBankCheckBox_Changed" Unchecked="BalancingBankCheckBox_Changed"/>
+                          <CheckBox Content="Bank 3" Name="IncludeBank3CheckBox" MinWidth="60" Checked="BalancingBankCheckBox_Changed" Unchecked="BalancingBankCheckBox_Changed"/>
+                          <CheckBox Content="Bank 4" Name="IncludeBank4CheckBox" MinWidth="60" Checked="BalancingBankCheckBox_Changed" Unchecked="BalancingBankCheckBox_Changed"/>
+                          <CheckBox Content="Bank 5" Name="IncludeBank5CheckBox" MinWidth="60" Checked="BalancingBankCheckBox_Changed" Unchecked="BalancingBankCheckBox_Changed"/>
+                        </WrapPanel>
+                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0" />
+                        <WrapPanel Height="50" Orientation="Vertical">
+                          <CheckBox Content="U-Turns" Name="IncludeUTurnsCheckBox" Checked="BalancingBankCheckBox_Changed" Unchecked="BalancingBankCheckBox_Changed"/>
+                          <CheckBox Content="RTORs" Name="IncludeRTORsCheckBox" Checked="BalancingBankCheckBox_Changed" Unchecked="BalancingBankCheckBox_Changed"/>
+                          <CheckBox Content="Psngr RTORs" Name="IncludePassengerRTORsCheckBox" Checked="BalancingBankCheckBox_Changed" Unchecked="BalancingBankCheckBox_Changed"/>
+                          <CheckBox Content="Hvy RTORs" Name="IncludeHeavyRTORsCheckBox" Checked="BalancingBankCheckBox_Changed" Unchecked="BalancingBankCheckBox_Changed"/>
+                          <CheckBox Content="Psngr U-Turns" Name="IncludePassengerUTurnsCheckBox" Checked="BalancingBankCheckBox_Changed" Unchecked="BalancingBankCheckBox_Changed"/>
+                          <CheckBox Content="Hvy U-Turns" Name="IncludeHeavyUTurnsCheckBox" Checked="BalancingBankCheckBox_Changed" Unchecked="BalancingBankCheckBox_Changed"/>
+                        </WrapPanel>
+                      </StackPanel>
+                    </StackPanel>
+                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0" Width="1" Background="{DynamicResource SectionHeaderFontColor}" />
+                    <StackPanel Orientation="Vertical" Margin="6,0,0,0">
+                      <TextBlock Text="Tubes" Style="{DynamicResource SectionHeaders}"/>
+                      <StackPanel>
+                        <DatePicker x:Name="tubeDate" IsTodayHighlighted="False" ToolTip="Choose which date to display tube data for the selected time period" SelectedDateChanged="tubeDate_SelectedDateChanged"/>
+                        <CheckBox x:Name="matchTMCsCheckBox" Content="Match TMCs" Margin="0,0,0,0" ToolTip="When enabled, each neighbor connection of each tube location will show data for the same date as the neighboring TMC. If a tube connection has no TMC neighbor, it will display data from the majority TMC date for the currently selected TMC time period." Checked="matchTMCsCheckBox_Checked" Unchecked="matchTMCsCheckBox_Unchecked"/>
+                        <CheckBox x:Name="includeUnclassifiedCheckBox" Content="Include Unclassified" Margin="0,0,0,0" ToolTip="When enabled, class tube counts will include unclassified vehicles in the balancing volumes." Checked="includeUnclassifiedCheckBox_Checked" Unchecked="includeUnclassifiedCheckBox_Unchecked"/>
+                      </StackPanel>
+                    </StackPanel>
+                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0" Width="1" Background="{DynamicResource SectionHeaderFontColor}" />
+                    <StackPanel Orientation="Vertical" Margin="6,0,0,0">
+                      <TextBlock Text="View" Style="{DynamicResource SectionHeaders}"/>
+                      <StackPanel Orientation="Horizontal">
+                        <WrapPanel Orientation="Vertical">
+                          <RadioButton Content="Neighbors" Name="ViewNeighborsMode" GroupName="LayoutMode" Checked="SetLayoutMode_Checked" Style="{DynamicResource RadioButtonBaseStyle}"/>
+                          <RadioButton Content="Totals" Name="ViewTotalsMode" GroupName="LayoutMode" Checked="SetLayoutMode_Checked" Style="{DynamicResource RadioButtonBaseStyle}"/>
+                          <RadioButton Content="Difference" Name="ViewDifferenceMode" GroupName="LayoutMode" Checked="SetLayoutMode_Checked" Style="{DynamicResource RadioButtonBaseStyle}"/>
+                        </WrapPanel>
+                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0"/>
+                        <CheckBox x:Name="showDatesCheckBox" Content="Show&#x0a;Dates" Checked="showDatesCheckBox_Checked" Unchecked="showDatesCheckBox_Unchecked"/>
+                      </StackPanel>
+                    </StackPanel>
+                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0" Width="1" Background="{DynamicResource SectionHeaderFontColor}" />
+                    <DockPanel LastChildFill="True">
+                      <TextBlock Text="Zoom" Style="{DynamicResource SectionHeaders}" DockPanel.Dock="Top"/>
+                      <!--<Grid Height="12"/>-->
+                      <Slider ToolTip="Change the zoom level of the balancing area. Can also be done using mouse scroll wheel." DockPanel.Dock="Left" Orientation="Vertical" Minimum="0.3" Maximum="1" x:Name="slider"/>
+                      <TextBlock Text="In" DockPanel.Dock="Top" Style="{DynamicResource SectionHelpers}"/>
+                      <TextBlock Text="Out" DockPanel.Dock="Bottom" Style="{DynamicResource SectionHelpers}"/>
+                    </DockPanel>
+                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0" Width="1" Background="{DynamicResource SectionHeaderFontColor}" />
+                    <StackPanel Orientation="Vertical">
+                      <TextBlock Text="Global Actions" Style="{DynamicResource SectionHeaders}"/>
+                      <StackPanel Orientation="Horizontal">
+                        <extensionClasses:MerlinButton x:Name="RemoveAllBMsButton" Content="Remove All" ImageSource="Resources/Icons/remove_property-48.png" Margin="0,4,3,4" 
+                                                     ButtonTextFontSize="8" Style="{DynamicResource WideButton}"
+                                                     ToolTip="Removes all intersections from the balancing evaluation area" Click="RemoveAllBMsButton_Click"/>
+                        <extensionClasses:MerlinButton x:Name="ResetNeighborsButton" Content="Reset Neighbors" Style="{DynamicResource WideButton}" Margin="3,4" 
+                        	                           ButtonTextFontSize="7" ImageSource="Resources/Icons/return-48.png" 
+                        	                           ToolTip="Resets all neighbors to adjacent intersections, overriding any user changes" Click="ResetNeighborsButton_Click"/>
+                        <extensionClasses:MerlinButton x:Name="ClearNeighborsButton" Content="Clear Neighbors" Style="{DynamicResource WideButton}" Margin="3,4,0,4" 
+                                                     ButtonTextFontSize="7" ImageSource="Resources/Icons/broom-48.png" 
+                                                     ToolTip="Removes all neighbor connections" Click="ClearNeighborsButton_Click"/>
+                      </StackPanel>
+                    </StackPanel>
+                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0" Width="1" Background="{DynamicResource SectionHeaderFontColor}" />
+                    <StackPanel Orientation="Vertical">
+                      <TextBlock Text="Color Key" Style="{DynamicResource SectionHeaders}"/>
+                      <TextBlock Text="* Exceeds balancing difference threshold" Foreground="Red"/>
+                      <TextBlock Text="* Different film date" Foreground="#BE00ED"/>
+                    </StackPanel>
+                  </StackPanel>
+                </ScrollViewer>
+                <Separator />
+              </DockPanel>
+              <ScrollViewer Name="BalancingScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="#D5E2E6">
+                <Grid Name="BalancingGrid" VerticalAlignment="Top" HorizontalAlignment="Left" MouseMove="BalancingGrid_MouseMove" MouseEnter="BalancingGrid_MouseEnter" MouseLeave="BalancingGrid_MouseLeave" ContextMenuOpening="BalancingGrid_ContextMenuOpening">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="*"/>
+                  </Grid.RowDefinitions>
+                  <Grid.LayoutTransform>
+                    <TransformGroup>
+                      <ScaleTransform x:Name="scaleTransform"/>
+                    </TransformGroup>
+                  </Grid.LayoutTransform>
+
+                </Grid>
+              </ScrollViewer>
+              <!--<Canvas x:Name="LayoutRoot" Background="Pink">
+              <Ellipse Fill="Yellow" Height="100" Width="100" Stroke="Black" MouseLeftButtonDown="Canvas_MouseLeftButtonDown" MouseMove="Canvas_MouseMove" MouseLeftButtonUp="Canvas_MouseLeftButtonUp" Canvas.Top="0" Canvas.Left="0"/>
+            </Canvas>-->
+            </DockPanel>
+          </Grid>
+        </TabItem>
+        <TabItem x:Name="FlagTab" PreviewMouseLeftButtonDown="FlagTab_Enabled" Style="{DynamicResource LargeTabItemStyle}" Loaded="FlagTab_Loaded">
+          <TabItem.Header>
+            <Label Content="Flags" Style="{DynamicResource LargeTabItemLabel}"/>
+          </TabItem.Header>
+          <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Grid>
+              <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <StackPanel  DockPanel.Dock="Top" Orientation="Horizontal">
+                  <extensionClasses:MerlinButton x:Name="runFlagsButton"  ToolTip="Run or Re-run Flags!" HorizontalAlignment="Left" 
+                                               Content="Run Flags" ImageSource="Resources\Icons\filled_flag_2-48.png" 
+                                               Margin="10,4,5,4" Click="RunFlags_Click"/>
+                  <extensionClasses:MerlinButton x:Name="clearFlagsButton" ToolTip="Clear Flags for this Project" HorizontalAlignment="Left"
+                                              Content="Clear Flags" ImageSource="Resources\Icons\broom-48.png"
+                                              Margin="4,4,5,4" Click="ClearFlags_Click"/>
+                  <StackPanel Orientation="Vertical">
+                    <Grid Height="8"/>
+                    <StackPanel Orientation="Horizontal">
+                      <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0" 
+                            Checked="HideFiltered_Click" Unchecked="ShowAllFlags_Click" x:Name="hideFilteredFlagsCheck">
+                        <ToggleButton.Template>
+                          <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Image>
+                              <Image.Style>
+                                <Style>
+                                  <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                  <Setter Property="Image.Height" Value="25"/>
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                      <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                      <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </Image.Style>
+                            </Image>
+                          </ControlTemplate>
+                        </ToggleButton.Template>
+                      </ToggleButton>
+                      <Label Target="hideFilteredFlagsCheck" Content="Hide Filtered Flags" FontSize="11" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                      <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0"  IsChecked="True"
+                            ToolTip="Ignore Bicycle Impossible Movements when clicking 'Run Flags!'" x:Name="ignoreBicyclesFlagsCheck">
+                        <ToggleButton.Template>
+                          <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Image>
+                              <Image.Style>
+                                <Style>
+                                  <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                  <Setter Property="Image.Height" Value="25"/>
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                      <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                      <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </Image.Style>
+                            </Image>
+                          </ControlTemplate>
+                        </ToggleButton.Template>
+                      </ToggleButton>
+                      <Label Target="ignoreBicyclesFlagsCheck" Width="128"
+                         ToolTip="Ignore Bicycle Impossible Movements when clicking 'Run Flags!'" VerticalAlignment="Center">
+                        <TextBlock Text="Ignore Bicycle Impossible Movements" TextWrapping="WrapWithOverflow" FontSize="11" VerticalAlignment="Top"/>
+                      </Label>
+                    </StackPanel>
+                  </StackPanel>
+                  <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"  Margin="2,0,2,0"/>
+                  <StackPanel x:Name="universalTestTogglePanel" Orientation="Vertical">
+                    <TextBlock Style="{DynamicResource SectionHeaders}" Text="Universal Tests" Margin="5,0,0,0" />
+                    <StackPanel Orientation="Horizontal">
+                      <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                          <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0" 
+                            IsChecked="False" x:Name="suspiciousTrafficFlowTestToggle" 
+                                    ToolTip="Checks for ratio discrepancies between AM and PM time periods (expecting cross direction inversion of flow).">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="25"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <Label Target="suspiciousTrafficFlowTestToggle" Content="Suspicious Traffic Flow" FontSize="11" VerticalAlignment="Center"
+                             ToolTip="Checks for ratio discrepancies between AM and PM time periods (expecting cross direction inversion of flow)."/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                          <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0"  IsChecked="True"
+                            ToolTip="Checks average cars per hour between time periods across counts of the same location." x:Name="suspiciousMovementTestToggle">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="25"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <Label Target="suspiciousMovementTestToggle" Content="Suspicious Movement" FontSize="11"
+                         ToolTip="Checks average cars per hour between time periods across counts of the same location." VerticalAlignment="Center"/>
+                        </StackPanel>
+                      </StackPanel>
+                      <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                          <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0" 
+                            x:Name="emptyIntervalTestToggle" IsChecked="True" ToolTip="Checks if entire intervals have a zero total sum.">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="25"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <Label Target="emptyIntervalTestToggle" Content="Empty Intervals" FontSize="11" VerticalAlignment="Center"
+                             ToolTip="Checks if entire intervals have a zero total sum."/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                          <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0"  IsChecked="True"
+                            ToolTip="Checks for Impossible Movements where the movement is marked not allowed (either by geometry or by manually indication)." 
+                                    x:Name="impossibleMovementsTestToggle">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="25"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <Label Target="impossibleMovementsTestToggle" Content="Impossible Movements" FontSize="11"
+                         ToolTip="Checks for Impossible Movements where the movement is marked not allowed (either by geometry or by manually indication)." 
+                             VerticalAlignment="Center"/>
+                        </StackPanel>
+                      </StackPanel>
+                      <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                          <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0"  IsChecked="True"
+                            ToolTip="Checks for no vehicles when a movement is possible based on intersection geometry." x:Name="noVehicleTestToggle">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="25"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <Label Target="noVehicleTestToggle" Content="No Vehicles Warning" FontSize="11"
+                         ToolTip="Checks for no vehicles when a movement is possible based on intersection geometry." VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                          <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0" 
+                            IsChecked="True" x:Name="lowHeaviesTestToggle" 
+                                    ToolTip="Checks for low heavies as a percent of the volume for the movement.">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="25"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <Label Target="lowHeaviesTestToggle" Content="Low Heavies" FontSize="11" VerticalAlignment="Center"
+                             ToolTip="Checks for low heavies as a percent of the volume for the movement."/>
+                        </StackPanel>
+                      </StackPanel>
+                      <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                          <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0" IsChecked="True" 
+                                    x:Name="lowIntervalTestToggle" ToolTip="Checks for low intervals against the average for the movement.">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="25"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <Label Target="lowIntervalTestToggle" Content="Low Intervals" FontSize="11" VerticalAlignment="Center"
+                             ToolTip="Checks for low intervals against the average for the movement."/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                          <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0" IsChecked="True" 
+                                    x:Name="highIntervalTestToggle" ToolTip="Checks for high intervals against the average for the movement.">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="25"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <Label Target="highIntervalTestToggle" Content="High Intervals" FontSize="11" VerticalAlignment="Center"
+                             ToolTip="Checks for high intervals against the average for the movement."/>
+                        </StackPanel>
+                      </StackPanel>
+                    </StackPanel>
+                  </StackPanel>
+                  <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"  Margin="2,0,2,0"/>
+                  <StackPanel x:Name="tmcOnlyTestTogglePanel" Orientation="Vertical">
+                    <TextBlock Style="{DynamicResource SectionHeaders}" Text="TMC Only Tests" Margin="5,0,0,0" />
+                    <StackPanel Orientation="Horizontal">
+                      <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                          <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0"  IsChecked="True"
+                            ToolTip="Checks for RTOR (data present in bank 1 ped) when a project is not marked as RTOR." x:Name="inappropriateRTORTestToggle">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="25"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <Label Target="inappropriateRTORTestToggle" Content="Inappropriate RTOR" FontSize="11"
+                         ToolTip="Checks for RTOR (data present in bank 1 ped) when a project is not marked as RTOR." VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                          <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0"  IsChecked="True"
+                            ToolTip="Checks for UTurn (data present in bank 2 ped) when a project is marked to not count UTurns (Flag displays as 'ImpossibleUTurn')." x:Name="inappropriateUTurnTestToggle">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="25"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <Label Target="inappropriateUTurnTestToggle" Content="Inappropriate UTurn" FontSize="11"
+                         ToolTip="Checks for UTurn (data present in bank 2 ped) when a project is marked to not count UTurns (Flag displays as 'ImpossibleUTurn')." 
+                             VerticalAlignment="Center"/>
+                        </StackPanel>
+                      </StackPanel>
+                    </StackPanel>
+                  </StackPanel>
+                  <StackPanel x:Name="classCountTestTogglePanel" Orientation="Vertical">
+                    <TextBlock Style="{DynamicResource SectionHeaders}" Text="Turn Class Count Tests" Margin="5,0,0,0" />
+                    <StackPanel Orientation="Horizontal">
+                      <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                          <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0"  IsChecked="True"
+                            ToolTip="Checks class percentages of volume each count against the percentages at the project level." 
+                                    x:Name="classCountAgainstProject">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="25"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <Label Target="classCountAgainstProject" Content="Count Vs Project Class %" FontSize="11"
+                         ToolTip="Checks class percentages of volume each count against the percentages at the project level." VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                          <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0" 
+                            IsChecked="True" x:Name="classHourAgainstCount" 
+                                    ToolTip="Checks class percentages of volume each hour against the percentages at the count level.">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="25"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <Label Target="classHourAgainstCount" Content="Hour Vs Count Class %" FontSize="11" VerticalAlignment="Center"
+                             ToolTip="Checks class percentages of volume each hour against the percentages at the count level."/>
+                        </StackPanel>
+                      </StackPanel>
+                      <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                          <ToggleButton HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Margin="5,0,0,0"  IsChecked="True"
+                            ToolTip="Checks class percentages of volume by file source against the percentages at the count level." 
+                                        x:Name="classFileAgainstCount">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="25"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <Label Target="classFileAgainstCount" Content="File Vs Count Class %" FontSize="11"
+                         ToolTip="Checks class percentages of volume by file source against the percentages at the count level." VerticalAlignment="Center"/>
+                        </StackPanel>
+                      </StackPanel>
+                    </StackPanel>
+                  </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                  <ListBox x:Name="FlagList" ScrollViewer.VerticalScrollBarVisibility="Auto" Width="Auto" MaxHeight="904" MinHeight="750"
+                         MinWidth="400" VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                         MaxWidth="460" PreviewKeyDown="FlagKey_Press" SelectionChanged="FlagSelect_Changed">
+                  </ListBox>
+                  <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                      <StackPanel Orientation="Vertical" Width="456">
+                        <TextBlock Text="Flag Details:" Style="{DynamicResource SectionHeaders}"/>
+                        <StackPanel Orientation="Horizontal" Margin="8,8,0,0">
+                          <TextBlock x:Name="flagTabLocation" Width="325"/>
+                          <Grid Width="10"/>
+                          <TextBlock x:Name="flagTabTimePeriod" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="8,8,0,8">
+                          <TextBlock x:Name="flagTabInterval" Width="325" />
+                          <Grid Width="10"/>
+                          <TextBlock x:Name="flagTabMovement"/>
+                        </StackPanel>
+                      </StackPanel>
+                      <StackPanel Orientation="Vertical" Width="400" Name="flagNoteAndTogglePanel">
+                        <StackPanel Orientation="Horizontal">
+                          <ToggleButton x:Name="acceptableFlag" Content="Accept As Is" HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Width="40" 
+                            Checked="MarkAsAcceptable_Click" Unchecked="MarkAsAcceptable_Click">
+                            <ToggleButton.Template>
+                              <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Image>
+                                  <Image.Style>
+                                    <Style>
+                                      <Setter Property="Image.Source" Value="Resources/Icons/unchecked_checkbox-48.png"/>
+                                      <Setter Property="Image.Height" Value="26"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                          <Setter Property="Image.Source" Value="Resources/Icons/checked_checkbox-48.png"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="False">
+                                          <Setter Property="Image.Opacity" Value=".25"></Setter>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Image.Style>
+                                </Image>
+                              </ControlTemplate>
+                            </ToggleButton.Template>
+                          </ToggleButton>
+                          <TextBlock VerticalAlignment="Center" FontSize="14" Text="Accept As-Is"/>
+                        </StackPanel>
+                        <StackPanel Name="flagNoteBoxPanel" Orientation="Vertical">
+                          <TextBlock Text="Note:" Margin="8,0,0,0"/>
+                          <TextBox SpellCheck.IsEnabled="True" x:Name="flagTabNote" TextWrapping="Wrap" Margin="8,0,0,0" Width="392" Height="36"
+                               LostKeyboardFocus="FlagTabText_Changed" PreviewKeyDown="FlagTabTextBox_PreviewKeyDown" GotKeyboardFocus="FlagTabText_GotKeyboardFocus"
+                                 extensionClasses:SelectTextOnFocus.Active="True"/>
+                        </StackPanel>
+                      </StackPanel>
+                    </StackPanel>
+                    <TextBlock x:Name="flagTabInformation" Margin="8,0,0,8"/>
+                    <TabControl x:Name="flagTabDataGridTabs" Height="Auto" Width="852" HorizontalAlignment="Left" SelectionChanged="FlagTabBankTab_Changed"/>
+                    <DataGrid DockPanel.Dock="Top" x:Name="flagDataDetails" Style="{DynamicResource FlagsTabDataGridStyle}" Margin="2,0,0,0"
+                            PreviewKeyDown="FlagTabDataGridHandleKeyPress" Loaded="FlagTabDataGrid_Loaded" CellEditEnding="FlagTabCellEdit_End" >
+                      <DataGrid.ColumnHeaderStyle >
+                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource  ColumnHeaderStyle}">
+                          <!--<EventSetter Event="PreviewMouseDown" Handler="DataTabColumnHeader_Click"/>-->
+                        </Style>
+                      </DataGrid.ColumnHeaderStyle>
+                      <DataGrid.CommandBindings>
+                        <CommandBinding Command="ApplicationCommands.Paste" Executed="FlagTabPaste_Executed" />
+                        <CommandBinding Command="ApplicationCommands.Cut" Executed="FlagTabCut_Executed" />
+                        <CommandBinding Command="ApplicationCommands.Undo" Executed="FlagTabUndo_Executed" />
+                        <CommandBinding Command="ApplicationCommands.Redo" Executed="FlagTabRedo_Executed" />
+                        <CommandBinding Command="ApplicationCommands.SelectAll" Executed="SelectAll_Executed" />
+                      </DataGrid.CommandBindings>
+                      <DataGrid.ContextMenu>
+                        <ContextMenu >
+                          <MenuItem Command="ApplicationCommands.Cut" Header="Cu_t"/>
+                          <MenuItem Command="ApplicationCommands.Copy" Header="_Copy"/>
+                          <MenuItem Command="ApplicationCommands.Paste" Header="_Paste"/>
+                          <Separator/>
+                          <MenuItem Command="ApplicationCommands.Undo" Header="_Undo"/>
+                          <MenuItem Command="ApplicationCommands.Redo" Header="_Redo"/>
+                        </ContextMenu>
+                      </DataGrid.ContextMenu>
+                    </DataGrid>
+                  </StackPanel>
+                </StackPanel>
+              </DockPanel>
+            </Grid>
+          </ScrollViewer>
+        </TabItem>
+        <TabItem x:Name="NotesTab"  Style="{DynamicResource LargeTabItemStyle}"
+                Loaded="notesTab_Loaded" PreviewMouseLeftButtonDown="notesTab_Selected">
+          <TabItem.Header>
+            <Label Content="Notes" Style="{DynamicResource LargeTabItemLabel}"/>
+          </TabItem.Header>
+          <ScrollViewer>
+            <StackPanel Orientation="Vertical" Name="notesContent" Margin="8">
+              <StackPanel Orientation="Vertical">
+                <DockPanel Width="Auto" HorizontalAlignment="Stretch">
+                  <TextBlock DockPanel.Dock="Left" Text="Project Level Notes:" Style="{DynamicResource SectionHeaders}" 
+                           Name="projectNotesHeaderTextBlock" VerticalAlignment="Center"/>
+                  <extensionClasses:MerlinButton DockPanel.Dock="Right" x:Name="notesTabPrintCountButton" ToolTip="Print Notes" HorizontalAlignment="Right" 
+                                                 Content="Print" Margin="10,4,5,4" Click="NotesDataTabPrintCount_Click"
+                                                 ImageSource="Resources\Icons\print-48.png" />
+                </DockPanel>
+                <StackPanel Orientation="Vertical" Margin="8,8,0,8" Name="projectNotesPanel" HorizontalAlignment="Left"/>
+
+              </StackPanel>
+              <StackPanel Name="intersectionFullPanel" Orientation="Vertical" Margin="0,8,0,0">
+                <TextBlock Text="Intersection and Count Level Notes:" Style="{DynamicResource SectionHeaders}" />
+                <StackPanel Orientation="Vertical" Margin="8" HorizontalAlignment="Left" Name="intersectionListPanel"/>
+              </StackPanel>
+            </StackPanel>
+          </ScrollViewer>
+        </TabItem>
+        <TabItem x:Name="CompletionTab"  Style="{DynamicResource LargeTabItemStyle}"
+                Loaded="summaryTab_Loaded" PreviewMouseLeftButtonDown="summaryTab_Selected">
+          <TabItem.Header>
+            <Label Content="Project Completion" Style="{DynamicResource LargeTabItemLabel}"/>
+          </TabItem.Header>
+          <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Grid>
+              <StackPanel Orientation="Vertical">
+                <extensionClasses:MerlinButton x:Name="refreshSummaryButton" ToolTip="Refresh the Project States" HorizontalAlignment="Left"
+                                    Style="{DynamicResource WideButton}" Margin="30,12,5,4" Click="RefreshStates_Click"
+                                    Content="Refresh" ImageSource="Resources\Icons\synchronize-48.png" />
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="550"/>
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                  </Grid.RowDefinitions>
+                  <Label Grid.Column="0" Grid.Row="0" Target="summaryTabDetails" Margin="30,0,0,0">
+                    <Run Text="Project Details: " FontSize="24"/>
+                  </Label>
+                  <Label Grid.Column="0" Grid.Row="1" Target="summaryTabData" Margin="30,0,0,0">
+                    <Run Text="Data: " FontSize="24"/>
+                  </Label>
+                  <Label Grid.Column="0" Grid.Row="2" Target="summaryTabBalancing" Margin="30,0,0,0">
+                    <Run Text="Balancing: " FontSize="24"/>
+                  </Label>
+                  <Label Grid.Column="0" Grid.Row="3" Target="summaryTabFlags" Margin="30,0,0,0">
+                    <Run Text="Flags: " FontSize="24"/>
+                  </Label>
+                  <Label Grid.Column="0" Grid.Row="4" Target="summaryTabExport" Margin="30,0,0,0">
+                    <Run Text="Export: " FontSize="24"/>
+                  </Label>
+                  <TextBlock Grid.Column="1" Grid.Row="0" x:Name="summaryTabDetails"/>
+                  <TextBlock Grid.Column="1" Grid.Row="1" x:Name="summaryTabData"/>
+                  <TextBlock Grid.Column="1" Grid.Row="2" x:Name="summaryTabBalancing"/>
+                  <TextBlock Grid.Column="1" Grid.Row="3" x:Name="summaryTabFlags"/>
+                  <TextBlock Grid.Column="1" Grid.Row="4" x:Name="summaryTabExport"/>
+                </Grid>
+                <Grid Height="20"></Grid>
+                <CheckBox Name="exportOldWayCheckBox" IsChecked="False" HorizontalAlignment="Left" Margin="30,0,0,0" Content="Export With Legacy Rules" 
+                          ToolTip="Export Using Legacy Rules.  Buses are grouped into heavy vehicles and E-Scooters are grouped into bicycles." />
+                
+              <StackPanel Orientation="Horizontal" Height="75">
+                  <Grid Width="20"></Grid>
+                  <extensionClasses:MerlinButton x:Name="exportOneButton" ToolTip="Export One or More Counts"
+                                        HorizontalAlignment="Left" Style="{DynamicResource LargeButton}" 
+                                        Content="Export Count(s)" ImageSource="Resources\Icons\txt-48.png" 
+                                        Margin="10,4,5,4" Click="summaryTabExport_Click"/>
+                  <extensionClasses:MerlinButton x:Name="exportAllButton" ToolTip="Export All Counts in this Project"
+                                        HorizontalAlignment="Left" Margin="10,4,5,4" Style="{DynamicResource LargeButton}"
+                                        Content="Export All" ImageSource="Resources\Icons\versions-48.png" Click="summaryTabExportAll_Click"/>
+                  <extensionClasses:MerlinButton x:Name="exportandConvertButton" ToolTip="Export All Counts And Open QCConversion Wizard" 
+                                        HorizontalAlignment="Left" Margin="10,4,5,4" Click="summaryTabExportConvert_Click"
+                                        Style="{DynamicResource LargeButton}" Content="Export &amp; Convert" 
+                                        ImageSource="Resources\Icons\play_property-48.png" />
+                  <extensionClasses:MerlinButton x:Name="convertOnlyButton" ToolTip="Open QCConversion Wizard" Margin="10,4,5,4" 
+                                        HorizontalAlignment="Left" Style="{DynamicResource LargeButton}" 
+                                        Content="Convert" ImageSource="Resources\Icons\play-48.png"   
+                                        Click="summaryTabConvert_Click"/>
+                  <Grid Width="130"></Grid>
+                  <extensionClasses:MerlinButton x:Name="projectSummaryButton" ToolTip="Generate Project Summary File" Margin="10,4,5,4" 
+                                        HorizontalAlignment="Left" Click="summaryTabSummaryFile_Click" Content="Summary File"
+                                        Style="{DynamicResource LargeButton}" ImageSource="Resources\Icons\falcon-48.png"/>
+                  <extensionClasses:MerlinButton x:Name="generateExcelButton" ToolTip="Generate Excel Deliverable Files" Margin="10,4,5,4" 
+                                        HorizontalAlignment="Left"  Content="Export to Excel"
+                                        Style="{DynamicResource LargeButton}" ImageSource="Resources\Icons\excel.png" Click="generateExcelButton_Click"/>
+                </StackPanel>
+              </StackPanel>
+            </Grid>
+          </ScrollViewer>
+        </TabItem>
+      </TabControl>
+    </Grid>
+  </Grid>
+</Window>

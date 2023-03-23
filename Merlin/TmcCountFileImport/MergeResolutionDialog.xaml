@@ -1,0 +1,178 @@
+﻿<Window x:Class="Merlin.TmcCountFileImport.MergeResolutionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:extensionClasses="clr-namespace:Merlin.ExtensionClasses"
+        Icon="..\Resources\Sample Logo\merlin-light-blue-no-text.ico"
+        ResizeMode="CanResize" ContentRendered="windowContent_Rendered"
+        Title="Import Conflict" Height="895" Width="1534" WindowState="Maximized" >
+  <!--WindowStartupLocation="Manual" Left="70" Top="80"-->
+
+  <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+    <Grid x:Name="mainGrid">
+      <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
+          <TextBlock x:Name="mainHeader" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          <StackPanel Name="columnSwappingNotification" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0" Visibility="Collapsed">
+            <Image Source="..\Resources\Images\ncdot.png" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Text="NCDOT Column Swapping Enabled" FontStyle="Italic" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF19B900"/>
+          </StackPanel>
+        </StackPanel>
+        <Separator/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+          <Grid Width="752">
+            <StackPanel Orientation="Vertical">
+              <TextBlock Height="28" x:Name="fileCountHeader" Margin="4,4"/>
+              <TabControl x:Name="fileTabs" SelectionChanged="bankTab_Changed" Width="597" Margin="4,4,4,0" HorizontalAlignment="Left"
+                         GotFocus="got_Focus"/>
+              <StackPanel Orientation="Horizontal">
+                <!-- CheckBoxes -->
+              </StackPanel>
+              <DataGrid x:Name="fileDataGrid" Style="{DynamicResource FileImportFileDataGridStyle}" PreviewKeyDown="dataGridHandleKeyPress"
+                    SelectedCellsChanged="CellSelection_Changed" 
+                        CellEditEnding="CellEdit_End" Margin="4,0,0,4" Loaded="DataGrid_Loaded" HorizontalAlignment="Left">
+                <DataGrid.ColumnHeaderStyle >
+                  <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource  ColumnHeaderStyle}">
+                    <EventSetter Event="PreviewMouseDown" Handler="fileGridColumnHeader_Click"/>
+                  </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.RowHeaderStyle>
+                  <Style TargetType="DataGridRowHeader" BasedOn="{StaticResource RowHeaderStyle}">
+                    <Setter Property="Width" Value="35" />
+                  </Style>
+                </DataGrid.RowHeaderStyle>
+                <DataGrid.CommandBindings>
+                  <CommandBinding Command="ApplicationCommands.Paste" Executed="Paste_Executed" />
+                  <CommandBinding Command="ApplicationCommands.Undo" Executed="Undo_Executed" />
+                  <CommandBinding Command="ApplicationCommands.Redo" Executed="Redo_Executed" />
+                  <CommandBinding Command="ApplicationCommands.Cut" Executed="Cut_Executed" />
+                  <CommandBinding Command="ApplicationCommands.SelectAll" Executed="SelectAll_Executed" />
+                </DataGrid.CommandBindings>
+                <DataGrid.ContextMenu>
+                  <ContextMenu >
+                    <MenuItem Command="ApplicationCommands.Cut" Header="Cu_t"/>
+                    <MenuItem Command="ApplicationCommands.Copy" Header="_Copy"/>
+                    <MenuItem Command="ApplicationCommands.Paste" Header="_Paste"/>
+                    <Separator/>
+                    <MenuItem Command="ApplicationCommands.Undo" Header="_Undo"/>
+                    <MenuItem Command="ApplicationCommands.Redo" Header="_Redo"/>
+                  </ContextMenu>
+                </DataGrid.ContextMenu>
+              </DataGrid>
+            </StackPanel>
+          </Grid>
+          <Grid Width="16" />
+          <Grid Width="752">
+            <StackPanel Orientation="Vertical">
+              <TextBlock Height="28" x:Name="currentCountHeader" Margin="4,4"/>
+              <TabControl x:Name="countTabs" SelectionChanged="bankTab_Changed" Width="597" Margin="4,4,4,0" HorizontalAlignment="Left">
+              </TabControl>
+              <StackPanel Orientation="Horizontal">
+                <!-- CheckBoxes -->
+              </StackPanel>
+              <DataGrid x:Name="countDataGrid" Style="{DynamicResource FileImportCountDataGridStyle}" Margin="4,0,4,4" Loaded="DataGrid_Loaded">
+                <DataGrid.ColumnHeaderStyle >
+                  <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource  ColumnHeaderStyle}">
+                    <EventSetter Event="PreviewMouseDown" Handler="countGridColumnHeader_Click"/>
+                  </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.RowHeaderStyle>
+                  <Style TargetType="DataGridRowHeader" BasedOn="{StaticResource RowHeaderStyle}">
+                    <Setter Property="Width" Value="35" />
+                  </Style>
+                </DataGrid.RowHeaderStyle>
+                <DataGrid.CommandBindings>
+                  <CommandBinding Command="ApplicationCommands.SelectAll" Executed="SelectAll_Executed" />
+                </DataGrid.CommandBindings>
+              </DataGrid>
+            </StackPanel>
+
+          </Grid>
+        </StackPanel>
+        <Grid>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+            <StackPanel Margin="4,0" x:Name="rangeSection">
+              <TextBlock Text="Interval Range" Style="{DynamicResource singleFileImportWindowHeaders}"/>
+              <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Vertical">
+                  <TextBlock Text="Starting Interval:" Margin="2,4,0,2"/>
+                  <TextBox x:Name="startingInterval" Margin="2,0,0,0" HorizontalAlignment="Left" Width="50" TextChanged="HeaderData_Changed" extensionClasses:SelectTextOnFocus.Active="True"/>
+                </StackPanel>
+                <Grid Width="30" />
+                <StackPanel Orientation="Vertical">
+                  <TextBlock Text="Ending Interval:" Margin="2,4,0,2"/>
+                  <TextBox x:Name="endingInterval" Margin="2,0,0,0" HorizontalAlignment="Left" Width="50" TextChanged="HeaderData_Changed" extensionClasses:SelectTextOnFocus.Active="True"/>
+                </StackPanel>
+              </StackPanel>
+            </StackPanel>
+            <Grid Width="20"/>
+            <StackPanel Orientation="Vertical" Margin="4,0" x:Name="approachesSection">
+              <TextBlock Text="Selected Approaches" Style="{DynamicResource singleFileImportWindowHeaders}"/>
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <StackPanel Orientation="Vertical" x:Name="SBPanel">
+                  <CheckBox Content="SB" Margin="2,2,0,2" x:Name="SBCheckBox" Style="{DynamicResource singleFileImportWindowApproachHeaders}" Checked="ApproachCheck_Changed" Unchecked="ApproachCheck_Changed"/>
+                  <CheckBox Content="SBR" Margin="2,2,0,2" x:Name="SBRCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                  <CheckBox Content="SBT" Margin="2,2,0,2" x:Name="SBTCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                  <CheckBox Content="SBL" Margin="2,2,0,2" x:Name="SBLCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                  <CheckBox Content="SBP" Margin="2,2,0,2" x:Name="SBPCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" x:Name="WBPanel">
+                  <CheckBox Content="WB" Margin="10,2,0,2" x:Name="WBCheckBox" Style="{DynamicResource singleFileImportWindowApproachHeaders}" Checked="ApproachCheck_Changed" Unchecked="ApproachCheck_Changed"/>
+                  <CheckBox Content="WBR" Margin="10,2,0,2" x:Name="WBRCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                  <CheckBox Content="WBT" Margin="10,2,0,2" x:Name="WBTCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                  <CheckBox Content="WBL" Margin="10,2,0,2" x:Name="WBLCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                  <CheckBox Content="WBP" Margin="10,2,0,2" x:Name="WBPCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" x:Name="NBPanel">
+                  <CheckBox Content="NB" Margin="10,2,0,2" x:Name="NBCheckBox" Style="{DynamicResource singleFileImportWindowApproachHeaders}" Checked="ApproachCheck_Changed" Unchecked="ApproachCheck_Changed"/>
+                  <CheckBox Content="NBR" Margin="10,2,0,2" x:Name="NBRCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                  <CheckBox Content="NBT" Margin="10,2,0,2" x:Name="NBTCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                  <CheckBox Content="NBL" Margin="10,2,0,2" x:Name="NBLCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                  <CheckBox Content="NBP" Margin="10,2,0,2" x:Name="NBPCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" x:Name="EBPanel">
+                  <CheckBox Content="EB" Margin="10,2,0,2" x:Name="EBCheckBox" Style="{DynamicResource singleFileImportWindowApproachHeaders}" Checked="ApproachCheck_Changed" Unchecked="ApproachCheck_Changed"/>
+                  <CheckBox Content="EBR" Margin="10,2,0,2" x:Name="EBRCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                  <CheckBox Content="EBT" Margin="10,2,0,2" x:Name="EBTCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                  <CheckBox Content="EBL" Margin="10,2,0,2" x:Name="EBLCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                  <CheckBox Content="EBP" Margin="10,2,0,2" x:Name="EBPCheckBox" Style="{DynamicResource singleFileImportWindowMovements}" Checked="MovementCheck_Changed" Unchecked="MovementCheck_Changed"/>
+                </StackPanel>
+              </StackPanel>
+            </StackPanel>
+            <Grid Width="20"/>
+            <StackPanel Orientation="Vertical">
+              <TextBlock Text="Banks To Include" Style="{DynamicResource singleFileImportWindowHeaders}"/>
+              <CheckBox Content="All Banks" x:Name="allBanksCheckBox" Style="{DynamicResource singleFileImportWindowApproachHeaders}" Margin="10,2,0,2"
+                        IsChecked="{Binding Mode=OneWay, Path=allBanksChecked}"  Checked="AllBanksCheck_Changed" Unchecked="AllBanksCheck_Changed"/>
+              <WrapPanel x:Name="bankPanel" Orientation="Vertical" Height="80" Width="Auto">
+
+              </WrapPanel>
+            </StackPanel>
+
+            <Grid Width="20"/>
+            <StackPanel Orientation="Vertical">
+              <extensionClasses:MerlinButton x:Name="rotateFileData" ToolTip="Rotate File Data" HorizontalAlignment="Left" Content="Rotate" 
+                                           Style="{DynamicResource LargeButton}" ImageSource="..\Resources\Icons\rotate_right-48.png" 
+                                           Margin="4,4,5,4" Click="rotateData_Click" />
+              <Grid Height="20" />
+              <StackPanel Orientation="Horizontal">
+                <extensionClasses:MerlinButton x:Name="useThisDataButton" ToolTip="Import all the data (including 0s) into the count and close the window." HorizontalAlignment="Left" 
+                                           Style="{DynamicResource LargeButton}"
+                                           Content="Use All File Data" ImageSource="..\Resources\Icons\export-48.png" Margin="4,4,5,4" Click="ApplyData_Click"/>
+                <extensionClasses:MerlinButton x:Name="useSelectedButton" ToolTip="Import the selected data into the count (including 0s)." HorizontalAlignment="Left" 
+                                           Style="{DynamicResource LargeButton}"
+                                           Content="Use Selected Data" ImageSource="..\Resources\Icons\select_all-48.png" Margin="4,4,5,4" 
+                                           Click="ApplySelected_Click" FontSize="8"/>
+              </StackPanel>
+            </StackPanel>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <extensionClasses:MerlinButton ToolTip="Do not import anything from the file, use current data." IsDefault="True" Content="Use Current Data"
+                                           Style="{DynamicResource LargeButton}"
+                                           VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                           ImageSource="..\Resources\Icons\thumb_up-48.png" Margin="4,0,40,4" Click="finished_Click"/>
+          </StackPanel>
+        </Grid>
+      </StackPanel>
+    </Grid>
+  </ScrollViewer>
+</Window>

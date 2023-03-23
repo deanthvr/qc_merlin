@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="Merlin.DetailsTab.TimePeriodUI"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ex="clr-namespace:Merlin.ExtensionClasses"
+             mc:Ignorable="d">
+  <UserControl.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+  </UserControl.Resources>
+  <Grid Height="20" Width="350" >
+    <Grid.Background>
+      <RadialGradientBrush RadiusX="0.8" SpreadMethod="Reflect" Opacity="0.3">
+        <GradientStop Color="#FFB4E7FF" Offset="0.7"/>
+        <GradientStop Color="#FF02AEFF" Offset="1"/>
+      </RadialGradientBrush>
+    </Grid.Background>
+    <!--<Border BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="2"/>-->
+    <StackPanel Height="20" Orientation="Horizontal" HorizontalAlignment="Left">
+      <CheckBox Name="isActiveCheckBox" Width="16" VerticalAlignment="Center" ToolTip="Indicates whether the current location has a count for this time period"/>
+      <TextBlock Name="TimePeriodText" Text="TP?" Width="69" Margin="5,0,0,0" TextAlignment="Center"/>
+      <StackPanel Orientation="Horizontal" Name="restOfControls" Visibility="{Binding ElementName=isActiveCheckBox, Path=IsChecked, Converter={StaticResource BoolToVis}}">
+        <DatePicker Name="CountDate" SelectedDateFormat="Long" Width="185" FontSize="10" SelectedDateChanged="CountDate_SelectedDateChanged"/>
+        <TextBlock Name="OrderNumForSiteCode" Text="000000" VerticalAlignment="Center" Width="50" TextAlignment="Right"/>
+        <TextBox Name="SiteCode" Width="25" Background="{x:Null}" ex:SelectTextOnFocus.Active="True" Text="" MaxLength="3" VerticalAlignment="Center" TextChanged="SiteCode_TextChanged" GotFocus="SiteCode_GotFocus" LostFocus="SiteCode_LostFocus"/>
+      </StackPanel>
+    </StackPanel>
+  </Grid>
+</UserControl>

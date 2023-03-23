@@ -1,0 +1,164 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+  <Style x:Key="TextBoxStyleBase" TargetType="{x:Type TextBox}">
+    <Setter Property="Margin" Value="6,2,2,2"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="Height" Value="20"/>
+  </Style>
+
+  <!-- Directories Style -->
+  <Style x:Key="DirectoryTextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxStyleBase}">
+    <Setter Property="Width" Value="325"/>
+    <Setter Property="Margin" Value="2,2,2,2"/>
+    <Setter Property="HorizontalAlignment" Value="Left"/>
+  </Style>
+
+  <!-- Miscellaneous Style -->
+  <Style x:Key="NumberTextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxStyleBase}">
+    <Setter Property="Width" Value="40"/>
+    <Setter Property="Margin" Value="2,2,2,2"/>
+  </Style>
+
+  <Style x:Key="ListBoxItemStyle" TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxStyleBase}">
+    <Setter Property="Width" Value="120"/>
+    <Setter Property="Margin" Value="4,2"/>
+    <Style.Triggers>
+      <Trigger Property="Text" Value="???">
+        <Setter Property="Foreground" Value="Red"></Setter>
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="approachStyle" TargetType="{x:Type TextBox}" BasedOn="{StaticResource ListBoxItemStyle}">
+    <Setter Property="Width" Value="40"/>
+    <Setter Property="HorizontalAlignment" Value="Left"/>
+  </Style>
+
+  <Style x:Key="listBoxTypeStyle" TargetType="{x:Type TextBox}" BasedOn="{StaticResource ListBoxItemStyle}">
+    <Setter Property="Width" Value="60"/>
+    <Setter Property="HorizontalAlignment" Value="Left"/>
+  </Style>
+
+  <Style x:Key="tubeApproachStyle" TargetType="{x:Type TextBox}" BasedOn="{StaticResource approachStyle}">
+    <Setter Property="Width" Value="40"/>
+    <Setter Property="HorizontalAlignment" Value="Left"/>
+    <Style.Triggers>
+      <Trigger Property="Text" Value="NBSB">
+        <Setter Property="Foreground" Value="Orange"/>
+      </Trigger>
+      <Trigger Property="Text" Value="SBNB">
+        <Setter Property="Foreground" Value="Orange"/>
+      </Trigger>
+      <Trigger Property="Text" Value="WBEB">
+        <Setter Property="Foreground" Value="Orange"/>
+      </Trigger>
+      <Trigger Property="Text" Value="EBWB">
+        <Setter Property="Foreground" Value="Orange"/>
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="EllipsisTextBox" TargetType="{x:Type TextBox}">
+    <Setter Property="Cursor" Value="IBeam"/>
+    <Style.Triggers>
+      <DataTrigger Binding="{Binding IsKeyboardFocused, RelativeSource={RelativeSource Self}}" Value="false">
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="TextBox">
+              <TextBlock Text="{TemplateBinding Text}"  TextTrimming="CharacterEllipsis"/>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </DataTrigger>
+    </Style.Triggers>
+  </Style>
+
+  <!-- Style for TextBoxes with Hint Text in the Box before Keyboard Focus -->
+  <Style x:Key="TextBoxWithHint" TargetType="{x:Type TextBox}" >
+    <Style.Resources>
+      <VisualBrush x:Key="HintBrush" AlignmentX="Left" AlignmentY="Top" Stretch="None">
+        <VisualBrush.Visual>
+          <Label Content="Enter New Note Here" Foreground="LightSteelBlue" />
+        </VisualBrush.Visual>
+      </VisualBrush>
+    </Style.Resources>
+    <Style.Triggers>
+      <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+        <Setter Property="Background" Value="{StaticResource HintBrush}" />
+      </Trigger>
+      <Trigger Property="Text" Value="{x:Null}">
+        <Setter Property="Background" Value="{StaticResource HintBrush}" />
+      </Trigger>
+      <Trigger Property="IsKeyboardFocused" Value="True">
+        <Setter Property="Background" Value="White" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="TextBoxWithHintOrder" TargetType="{x:Type TextBox}" >
+    <Style.Resources>
+      <VisualBrush x:Key="HintBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+        <VisualBrush.Visual>
+          <Label Content="Order Number" Foreground="LightSteelBlue" FontSize="24" VerticalContentAlignment="Center"/>
+        </VisualBrush.Visual>
+      </VisualBrush>
+    </Style.Resources>
+    <Style.Triggers>
+      <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+        <Setter Property="Background" Value="{StaticResource HintBrush}" />
+      </Trigger>
+      <Trigger Property="Text" Value="{x:Null}">
+        <Setter Property="Background" Value="{StaticResource HintBrush}" />
+      </Trigger>
+      <Trigger Property="IsKeyboardFocused" Value="True">
+        <Setter Property="Background" Value="White" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="TextBoxWithHintProject" TargetType="{x:Type TextBox}" >
+    <Style.Resources>
+      <VisualBrush x:Key="HintBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+        <VisualBrush.Visual>
+          <Label Content="Project Name" Foreground="LightSteelBlue" FontSize="24" VerticalContentAlignment="Center"/>
+        </VisualBrush.Visual>
+      </VisualBrush>
+    </Style.Resources>
+    <Style.Triggers>
+      <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+        <Setter Property="Background" Value="{StaticResource HintBrush}" />
+      </Trigger>
+      <Trigger Property="Text" Value="{x:Null}">
+        <Setter Property="Background" Value="{StaticResource HintBrush}" />
+      </Trigger>
+      <Trigger Property="IsKeyboardFocused" Value="True">
+        <Setter Property="Background" Value="White" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="TextBoxWithHintLocation" TargetType="{x:Type TextBox}" >
+    <Style.Resources>
+      <VisualBrush x:Key="HintBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+        <VisualBrush.Visual>
+          <Label Content="Location" Foreground="LightSteelBlue" FontSize="16" VerticalContentAlignment="Center"/>
+        </VisualBrush.Visual>
+      </VisualBrush>
+    </Style.Resources>
+    <Style.Triggers>
+      <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+        <Setter Property="Background" Value="{StaticResource HintBrush}" />
+      </Trigger>
+      <Trigger Property="Text" Value="{x:Null}">
+        <Setter Property="Background" Value="{StaticResource HintBrush}" />
+      </Trigger>
+      <Trigger Property="IsKeyboardFocused" Value="True">
+        <Setter Property="Background" Value="White" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+
+</ResourceDictionary>

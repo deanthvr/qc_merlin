@@ -1,0 +1,92 @@
+﻿<UserControl x:Class="Merlin.BankPresets.BankPreset"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d">
+  <Grid Background="#FFB8DCFF">
+    <StackPanel>
+      <TextBlock Name="presetName" Text="Preset Title" FontSize="14" FontWeight="Bold">
+        <TextBlock.Background>
+          <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+            <GradientStop Color="Black" Offset="1"/>
+            <GradientStop Color="#FF6FDFFF" Offset="0.7"/>
+          </LinearGradientBrush>
+        </TextBlock.Background>
+      </TextBlock>
+      <StackPanel>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="110"/>
+            <ColumnDefinition Width="110"/>
+            <ColumnDefinition Width="110"/>
+            <ColumnDefinition Width="110"/>
+            <ColumnDefinition Width="110"/>
+            <ColumnDefinition Width="110"/>
+            <ColumnDefinition Width="110"/>
+            <ColumnDefinition Width="110"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+          </Grid.RowDefinitions>
+
+          <TextBlock Text="Bank 0:" Name="Bank0Header" FontWeight="Bold" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center"/>
+          <TextBlock Text="Bank 1:" Name="Bank1Header" FontWeight="Bold" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center"/>
+          <TextBlock Text="Bank 2:" Name="Bank2Header" FontWeight="Bold" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center"/>
+          <TextBlock Text="Bank 3:" Name="Bank3Header" FontWeight="Bold" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Center"/>
+          <TextBlock Text="Bank 4:" Name="Bank4Header" FontWeight="Bold" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Center"/>
+          <TextBlock Text="Bank 5:" Name="Bank5Header" FontWeight="Bold" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Center"/>
+          <TextBlock Text="Bank 6:" Name="Bank6Header" FontWeight="Bold" Grid.Row="0" Grid.Column="7" HorizontalAlignment="Center"/>
+          <TextBlock Text="Bank 7:" Name="Bank7Header" FontWeight="Bold" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center"/>
+          <TextBlock Text="Bank 8:" Name="Bank8Header" FontWeight="Bold" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center"/>
+          <TextBlock Text="Bank 9:" Name="Bank9Header" FontWeight="Bold" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Center"/>
+          <TextBlock Text="Bank 10:" Name="Bank10Header" FontWeight="Bold" Grid.Row="3" Grid.Column="4" HorizontalAlignment="Center"/>
+          <TextBlock Text="Bank 11:" Name="Bank11Header" FontWeight="Bold" Grid.Row="3" Grid.Column="5" HorizontalAlignment="Center"/>
+          <TextBlock Text="Bank 12:" Name="Bank12Header" FontWeight="Bold" Grid.Row="3" Grid.Column="6" HorizontalAlignment="Center"/>
+          <TextBlock Text="Bank 13:" Name="Bank13Header" FontWeight="Bold" Grid.Row="3" Grid.Column="7" HorizontalAlignment="Center"/>
+
+          <TextBlock Name="bank0VehType" Text="Bank 0 Vehicle Type" FontSize="10" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank1VehType" Text="Bank 1 Vehicle Type" FontSize="10" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank2VehType" Text="Bank 2 Vehicle Type" FontSize="10" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank3VehType" Text="Bank 3 Vehicle Type" FontSize="10" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank4VehType" Text="Bank 4 Vehicle Type" FontSize="10" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank5VehType" Text="Bank 5 Vehicle Type" FontSize="10" Grid.Row="1" Grid.Column="6" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank6VehType" Text="Bank 6 Vehicle Type" FontSize="10" Grid.Row="1" Grid.Column="7" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank7VehType" Text="Bank 7 Vehicle Type" FontSize="10" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank8VehType" Text="Bank 8 Vehicle Type" FontSize="10" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank9VehType" Text="Bank 9 Vehicle Type" FontSize="10" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank10VehType" Text="Bank 10 Vehicle Type" FontSize="10" Grid.Row="4" Grid.Column="4" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank11VehType" Text="Bank 11 Vehicle Type" FontSize="10" Grid.Row="4" Grid.Column="5" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank12VehType" Text="Bank 12 Vehicle Type" FontSize="10" Grid.Row="4" Grid.Column="6" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank13VehType" Text="Bank 13 Vehicle Type" FontSize="10" Grid.Row="4" Grid.Column="7" HorizontalAlignment="Center"/>
+
+          <TextBlock Text="Vehicle Type:" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right"/>
+          <TextBlock Text="Ped Column Data:" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right"/>
+          <TextBlock Text="Vehicle Type:" Grid.Column="0" Grid.Row="4" HorizontalAlignment="Right"/>
+          <TextBlock Text="Ped Column Data:" Grid.Column="0" Grid.Row="5" HorizontalAlignment="Right"/>
+
+          <TextBlock Name="bank0PedData" Text="Ped Column Data" FontSize="10" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank1PedData" Text="Ped Column Data" FontSize="10" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank2PedData" Text="Ped Column Data" FontSize="10" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank3PedData" Text="Ped Column Data" FontSize="10" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank4PedData" Text="Ped Column Data" FontSize="10" Grid.Row="2" Grid.Column="5" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank5PedData" Text="Ped Column Data" FontSize="10" Grid.Row="2" Grid.Column="6" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank6PedData" Text="Ped Column Data" FontSize="10" Grid.Row="2" Grid.Column="7" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank7PedData" Text="Ped Column Data" FontSize="10" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank8PedData" Text="Ped Column Data" FontSize="10" Grid.Row="5" Grid.Column="2" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank9PedData" Text="Ped Column Data" FontSize="10" Grid.Row="5" Grid.Column="3" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank10PedData" Text="Ped Column Data" FontSize="10" Grid.Row="5" Grid.Column="4" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank11PedData" Text="Ped Column Data" FontSize="10" Grid.Row="5" Grid.Column="5" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank12PedData" Text="Ped Column Data" FontSize="10" Grid.Row="5" Grid.Column="6" HorizontalAlignment="Center"/>
+          <TextBlock Name="bank13PedData" Text="Ped Column Data" FontSize="10" Grid.Row="5" Grid.Column="7" HorizontalAlignment="Center"/>
+
+        </Grid>
+      </StackPanel>
+    </StackPanel>
+  </Grid>
+</UserControl>

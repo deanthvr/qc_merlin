@@ -1,0 +1,58 @@
+﻿<Window x:Class="Merlin.CountFileChangeSelection"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Icon="..\Resources\Sample Logo\merlin-light-blue.ico"
+        Title="Change Count File Association" Height="550" Width="400"
+        ContentRendered="content_Rendered"
+        ResizeMode="CanResize" ShowInTaskbar="True" WindowStartupLocation="Manual" Left="170" Top="95">
+    <Grid>
+      <StackPanel Orientation="Vertical">
+        <TextBlock x:Name="countHeader" Style="{DynamicResource SectionHeaders}"/>
+      <ListView x:Name="countListView" Height="440" SelectionMode="Single" ScrollViewer.VerticalScrollBarVisibility="Auto" PreviewMouseDoubleClick="CountList_DoubleClick"/>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button ToolTip="Export Selected Counts" IsDefault="True" Height="40" Width="50" Margin="4,4" Click="selectionComplete_Click">
+          <Grid>
+            <StackPanel Orientation="Vertical">
+              <Image Source="..\Resources\Icons\checked_2-48.png">
+                <Image.Style>
+                  <Style>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type Button}}}" Value="False">
+                        <Setter Property="Image.Opacity" Value=".25"></Setter>
+                      </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Image.Height" Value="20"></Setter>
+                  </Style>
+                </Image.Style>
+              </Image>
+              <TextBlock Text="Select" FontSize="10"/>
+            </StackPanel>
+          </Grid>
+        </Button>
+        <Button ToolTip="Cancel Search" IsCancel="True" Height="40" Width="50" Margin="4,4,10,4" Click="cancel_Click">
+          <Grid>
+            <StackPanel Orientation="Vertical">
+              <Image Source="..\Resources\Icons\cancel_2-48.png">
+                <Image.Style>
+                  <Style>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding IsEnabled, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type Button}}}" Value="False">
+                        <Setter Property="Image.Opacity" Value=".25"></Setter>
+                      </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Image.Height" Value="20"></Setter>
+                  </Style>
+                </Image.Style>
+              </Image>
+              <TextBlock Text="Cancel" FontSize="10"/>
+            </StackPanel>
+          </Grid>
+        </Button>
+      </StackPanel>
+    </StackPanel>
+  </Grid>
+</Window>

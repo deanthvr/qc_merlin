@@ -1,0 +1,26 @@
+﻿<Window xmlns:CustomizeLocationsWindow="clr-namespace:Merlin.CustomizeLocationsWindow"  x:Class="Merlin.CustomizeLocationsWindow.CustomizeLocsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Icon="../Resources/Sample Logo/merlin-light-blue.ico" Title="Customize Locations" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStyle="ToolWindow" Closing="Window_Closing">
+  <Grid>
+    <StackPanel>
+      <DockPanel LastChildFill="True">
+        <WrapPanel Name="ListOfTimePeriods">
+          <TextBlock/>
+        </WrapPanel>
+        <Button Content="Regenerate Site Codes" ToolTip="Regenerates site codes based on current selections" Name="RegenerateSideCodes" DockPanel.Dock="Right" HorizontalAlignment="Right" Click="RegenerateSideCodes_Click"/>
+      </DockPanel>
+      <ListView Name="CustomizeLocationsList" Width="800" Height="550" KeyboardNavigation.TabNavigation="Cycle" PreviewKeyDown="CustomizeLocationsList_PreviewKeyDown">
+        <ListView.ItemContainerStyle>
+          <Style TargetType="{x:Type ListViewItem}">
+            <EventSetter Event="RequestBringIntoView" Handler="ProjectListView_OnRequestBringIntoView"/>
+          </Style>
+        </ListView.ItemContainerStyle>
+      </ListView>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button Margin="5" Content="&lt;&lt; Go Back" Name="cancel" Click="cancel_Click"/>
+        <Button Margin="5" Content="Save &amp; Finish" Name="saveAndFinish" Click="saveAndFinish_Click"/>
+      </StackPanel>
+    </StackPanel>
+  </Grid>
+</Window>

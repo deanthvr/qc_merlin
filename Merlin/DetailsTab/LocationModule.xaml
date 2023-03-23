@@ -1,0 +1,98 @@
+﻿<UserControl x:Class="Merlin.DetailsTab.LocationModule"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:extensionClasses="clr-namespace:Merlin.ExtensionClasses"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:c="clr-namespace:Merlin.CustomizeLocationsWindow"
+             mc:Ignorable="d">
+  <UserControl.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+  </UserControl.Resources>
+  
+  <Grid Name="mainGrid" HorizontalAlignment="Stretch">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="32"/>
+      <RowDefinition Height="68"/>
+    </Grid.RowDefinitions>
+
+    <!--StackPanel which contains condensed location information-->
+    <StackPanel Orientation="Horizontal" Height="32" Grid.Row="0">
+      <Grid MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave" MouseDown="Grid_MouseDown" Width="22">
+        <TextBlock Text="-" Name="DeleteX" FontSize="26" Foreground="#FFF50000" FontFamily="Global Sans Serif" Width="22" 
+                 TextAlignment="Center" Height="32"/>
+      </Grid>
+      <Grid Width="100">
+        <TextBlock Name="LocationNum" Text="Location #" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+      </Grid>
+      <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+        <TextBlock Text="NB&#x0a;SB" FontSize="10" VerticalAlignment="Center" Opacity="0.4" TextAlignment="Center"/>
+        <TextBox Width="275" Name="NBSB" Margin="5,2" FontSize="16" BorderThickness="0" Background="{x:Null}" Style="{DynamicResource EllipsisTextBox}"
+               extensionClasses:SelectTextOnFocus.Active="True" VerticalContentAlignment="Center" PreviewKeyDown="TextBox_PreviewKeyDown"/>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Text="EB&#x0a;WB" FontSize="10" VerticalAlignment="Center" Opacity="0.4" TextAlignment="Center"/>
+        <TextBox Width="275" Name="EBWB" Margin="5,2" FontSize="16" BorderThickness="0" Background="{x:Null}" Style="{DynamicResource EllipsisTextBox}"
+               extensionClasses:SelectTextOnFocus.Active="True" VerticalContentAlignment="Center" PreviewKeyDown="TextBox_PreviewKeyDown"/>
+      </StackPanel>
+      <!--<WrapPanel Name="tpCheckBoxesPanel" Orientation="Vertical">
+      <CheckBox Content="hello" IsTabStop="False"/>
+      <CheckBox Content="hello" IsTabStop="False"/>
+      <CheckBox Content="hello" IsTabStop="False"/>
+      <CheckBox Content="hello" IsTabStop="False"/>
+      <CheckBox Content="hello" IsTabStop="False"/>
+      <CheckBox Content="hello" IsTabStop="False"/>
+      <CheckBox Content="hello" IsTabStop="False"/>
+    </WrapPanel>-->
+      <!--<StackPanel Width="50">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="right">
+        <TextBlock Visibility="{Binding ElementName=AM_isEnabled, Path=IsVisible, Converter={StaticResource BoolToVis}}">AM</TextBlock>
+        <CheckBox Name="AM_isEnabled" IsTabStop="False"/>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="right">
+        <TextBlock Visibility="{Binding ElementName=C2_isEnabled, Path=IsVisible, Converter={StaticResource BoolToVis}}">C2</TextBlock>
+        <CheckBox Name="C2_isEnabled" IsTabStop="False"/>
+      </StackPanel>
+    </StackPanel>
+    <StackPanel Width="50">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="right">
+        <TextBlock Visibility="{Binding ElementName=MID_isEnabled, Path=IsVisible, Converter={StaticResource BoolToVis}}">MID</TextBlock>
+        <CheckBox Name="MID_isEnabled" IsTabStop="False"/>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="right">
+        <TextBlock Visibility="{Binding ElementName=C3_isEnabled, Path=IsVisible, Converter={StaticResource BoolToVis}}">C3</TextBlock>
+        <CheckBox Name="C3_isEnabled" IsTabStop="False"/>
+      </StackPanel>
+    </StackPanel>
+    <StackPanel Width="50">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="right">
+        <TextBlock Visibility="{Binding ElementName=PM_isEnabled, Path=IsVisible, Converter={StaticResource BoolToVis}}">PM</TextBlock>
+        <CheckBox Name="PM_isEnabled" IsTabStop="False"/>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="right">
+        <TextBlock Visibility="{Binding ElementName=C4_isEnabled, Path=IsVisible, Converter={StaticResource BoolToVis}}">C4</TextBlock>
+        <CheckBox Name="C4_isEnabled" IsTabStop="False"/>
+      </StackPanel>
+    </StackPanel>
+    <StackPanel Width="50">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="right">
+        <TextBlock Visibility="{Binding ElementName=C1_isEnabled, Path=IsVisible, Converter={StaticResource BoolToVis}}">C1</TextBlock>
+        <CheckBox Name="C1_isEnabled" IsTabStop="False"/>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="right">
+        <TextBlock Visibility="{Binding ElementName=C5_isEnabled, Path=IsVisible, Converter={StaticResource BoolToVis}}">C5</TextBlock>
+        <CheckBox Name="C5_isEnabled" IsTabStop="False"/>
+      </StackPanel>
+    </StackPanel>-->
+    </StackPanel>
+    <!--StackPanel which contains extended location information-->
+    <WrapPanel Name="locationTimePeriodsPanel" Orientation="Vertical" Grid.Row="1" Margin="123,0,0,0"/>
+
+    <Grid Grid.Row="0" Grid.RowSpan="2" Margin="22,0,0,0" Width="100" Height="100" HorizontalAlignment="Left" MouseEnter="diagram_MouseEnter" MouseLeave="diagram_MouseLeave">
+      <c:IntersectionConfig x:Name="diagram"/>
+      <TextBlock Name="locationNumberTextBlock" Text="{Binding ElementName=LocationNum, Path=Text}" FontSize="9" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+      <extensionClasses:MerlinButton x:Name="customizeMovementsButton" ImageSource="..\Resources\Icons\settings_3-48.png" Content="Movements" ToolTip="Customize possible intersection movements" Visibility="Collapsed" Click="customizeMovementsButton_Click"/>
+    </Grid>
+  </Grid>
+
+</UserControl>

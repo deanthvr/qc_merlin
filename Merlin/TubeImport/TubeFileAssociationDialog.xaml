@@ -1,0 +1,68 @@
+﻿<Window x:Class="Merlin.TubeImport.TubeFileAssociationDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:countFileImport="clr-namespace:Merlin.TubeImport"
+        xmlns:extensionClasses="clr-namespace:Merlin.ExtensionClasses"
+        Icon="..\Resources\Sample Logo\merlin-light-blue-no-text.ico"
+        ResizeMode="CanResize" ShowInTaskbar="True"
+        Title="Tube Files Management" Height="590" Width="950" MinWidth="950" MaxWidth="950" WindowStartupLocation="Manual" Left="170" Top="75">
+  <Window.Resources>
+    <countFileImport:ValueConverter x:Key="ValueConverter"></countFileImport:ValueConverter>
+  </Window.Resources>
+  
+  <DockPanel ScrollViewer.VerticalScrollBarVisibility="Auto">
+    <DockPanel DockPanel.Dock="Bottom">
+      <extensionClasses:MerlinButton x:Name="removeFileButton" ToolTip="Remove File" Content="Remove"  DockPanel.Dock="Left"
+                                         ImageSource="..\Resources/Icons/delete-48.png" Margin="4,4" Click="RemoveFile_Click"/>
+      <extensionClasses:MerlinButton ToolTip="Add More Files" Content="Add" DockPanel.Dock="Left"
+                                         ImageSource="..\Resources/Icons/add_list-48.png" Margin="4,4" Click="AddMoreFiles_Click"/>
+      <extensionClasses:MerlinButton ToolTip="Cancel Search" IsCancel="True" Content="Cancel" DockPanel.Dock="Right"
+                                         ImageSource="..\Resources\Icons\cancel_2-48.png" Margin="4,4" Click="Cancel_Click"/>
+      <extensionClasses:MerlinButton ToolTip="Import Data from these Files" IsDefault="True" Content="Next" DockPanel.Dock="Right"
+                                         ImageSource="..\Resources/Icons/export-48.png" Margin="4,4" Click="Next_Click"/>
+      <StackPanel Orientation="Vertical">
+        <TextBlock x:Name="messageBlock2" Width="625" Margin="4,4" VerticalAlignment="Center"/>
+        <TextBlock x:Name="messageBlock" Width="625" Margin="4,4" VerticalAlignment="Center"/>
+      </StackPanel>
+    </DockPanel>
+    <ListView x:Name="fileListView" ItemsSource="{DynamicResource Files}"
+                  SelectionChanged="FileListSelection_Changed" PreviewKeyDown="Key_Down"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+      <ListView.View>
+        <GridView>
+          <GridViewColumn Header="Files Found" DisplayMemberBinding="{Binding Key}" Width="575"/>
+          <GridViewColumn Header="Associated Count"  Width="175" >
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <TextBox x:Name="siteCode" Text="{Binding Value.SiteCode, Mode=OneWay}" Style="{DynamicResource ListBoxItemStyle}" 
+                             TextChanged="SiteCode_Changed" />
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+          <GridViewColumn Header="Approach" Width="65">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <TextBox x:Name="approach" Text="{Binding Value.Approach, Mode=OneWay}" Style="{DynamicResource tubeApproachStyle}" 
+                             TextChanged="Approach_Changed" />
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+          <GridViewColumn Header="Type" Width="85">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <TextBox x:Name="type" Text="{Binding Value.Type, Mode=OneWay}" Style="{DynamicResource listBoxTypeStyle}" 
+                             TextChanged="Type_Changed" />
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+        </GridView>
+      </ListView.View>
+      <ListView.ItemContainerStyle>
+        <Style TargetType="ListViewItem">
+          <Setter Property="Height" Value="28" />
+        </Style>
+      </ListView.ItemContainerStyle>
+    </ListView>
+  </DockPanel>
+</Window>

@@ -1,0 +1,85 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  
+  <!-- TextBlock Base Style  -->
+  <Style x:Key="TextBlockStyleBase" TargetType="{x:Type TextBlock}">
+    <Setter Property="Margin" Value="2,2,2,2"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="VerticalAlignment" Value="Bottom"/>
+  </Style>
+
+  <!-- Headers Base Style -->
+  <Style x:Key="SectionHeaders" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockStyleBase}">
+    <Setter Property="FontSize" Value="16"/>
+    <Setter Property="Foreground" Value="{DynamicResource SectionHeaderFontColor}"/>
+  </Style>
+  
+  <!-- Sub Headers Base Style -->
+  <Style x:Key="SectionSubHeaders" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockStyleBase}">
+    <Setter Property="FontSize" Value="14"/>
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{DynamicResource SubsectionHeaderFontColor}"/>
+  </Style>
+
+  <!-- Sub Headers Base Style -->
+  <Style x:Key="SectionSubSubHeaders" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockStyleBase}">
+    <Setter Property="FontSize" Value="13"/>
+    <Setter Property="Foreground" Value="{DynamicResource SubsubsectionHeaderFontColor}"/>
+  </Style>
+
+
+  <!-- Helper Text Base Style -->
+  <Style x:Key="SectionHelpers" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockStyleBase}">
+    <Setter Property="FontSize" Value="10"/>
+  </Style>
+
+  <!-- Printing Styles -->
+  <Style x:Key="PrintingMainHeaders" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockStyleBase}">
+    <Setter Property="FontSize" Value="20"/>
+    <Setter Property="Margin" Value="0,10,2,0"/>
+  </Style>
+  
+  <!-- Printing Styles -->
+  <Style x:Key="PrintingSectionHeaders" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockStyleBase}">
+    <Setter Property="FontSize" Value="18"/>
+    <Setter Property="Margin" Value="4,10,2,0"/>
+    <Setter Property="Foreground" Value="{DynamicResource SectionHeaderFontColor}"/>
+  </Style>
+
+  <Style x:Key="PrintingSectionSubHeaders" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockStyleBase}">
+    <Setter Property="FontSize" Value="14"/>
+    <Setter Property="Margin" Value="12,10,2,0"/>
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{DynamicResource SubsectionHeaderFontColor}"/>
+  </Style>
+
+  <Style x:Key="PrintingSectionSubSubHeaders" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockStyleBase}">
+    <Setter Property="FontSize" Value="13"/>
+    <Setter Property="Margin" Value="16,10,2,0"/>
+    <Setter Property="Foreground" Value="{DynamicResource SubsubsectionHeaderFontColor}"/>
+  </Style>
+
+
+  <!-- Specific Styles -->
+
+  <Style x:Key="rotateWindowHeaders" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource SectionHeaders}">
+    <Setter Property="Margin" Value="2,2,2,6"/>
+  </Style>
+
+  <Style x:Key="rotateWindowHelpers" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource SectionHelpers}">
+    <Setter Property="Margin" Value="30,2,0,2"/>
+  </Style>
+
+  <Style x:Key="singleFileImportWindowHeaders" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource SectionHeaders}">
+    <Setter Property="Margin" Value="2,2,2,6"/>
+  </Style>
+
+  <Style x:Key="singleFileImportWindowHelpers" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource SectionHelpers}">
+    <Setter Property="Margin" Value="30,2,0,2"/>
+  </Style>
+
+  <Style x:Key="SettingsWindowHeaders" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource SectionHeaders}">
+    <Setter Property="Margin" Value="6,4,2,0"/>
+  </Style>
+
+</ResourceDictionary>

@@ -1,0 +1,12 @@
+﻿<Window x:Class="Merlin.SpecialWindows.NPMWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Merlin Special" Height="652" Width="700" WindowStartupLocation="CenterScreen">
+  <Grid>
+    <StackPanel Orientation="Vertical">
+      <Image Source="..\Resources\Images\image002.jpg"/>
+      <TextBlock Height="50" Text="Happy Birthday Nick!" HorizontalAlignment="Center" FontSize="42" Foreground="Brown"/>
+      <TextBlock Height="50" Text="Have fun in Reno!" HorizontalAlignment="Center" FontSize="42" Foreground="Tan"/>
+    </StackPanel>
+  </Grid>
+</Window>

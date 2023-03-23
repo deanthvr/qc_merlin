@@ -1,0 +1,152 @@
+﻿<Window x:Class="Merlin.QCDBImportWizard.ProjectDetailsSync"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:extensionClasses="clr-namespace:Merlin.ExtensionClasses"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:Choices="clr-namespace:Merlin.QCDBImportWizard"
+        Icon="..\Resources\Sample Logo\merlin-light-blue-no-text.ico"
+        ResizeMode="CanResize" ShowInTaskbar="True" Name="ProjectDetailsSyncWindow"
+        Title="Project Details Sync" Height="700" Width="1334" WindowStartupLocation="Manual" Left="13" Top="26">
+  
+  <Window.Resources>
+    <ObjectDataProvider MethodName="GetValues"
+        ObjectType="{x:Type System:Enum}"
+        x:Key="ComboBoxValues">
+      <ObjectDataProvider.MethodParameters>
+        <x:Type TypeName="Choices:BoxChoices" />
+      </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+  </Window.Resources>
+  
+  <Grid Name="WindowGrid" Margin="4">
+    <StackPanel Orientation="Vertical">
+      <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal" >
+          <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Text="Order Number" Style="{DynamicResource SectionHeaders}"/>
+              <TextBlock Margin="16,2" Width="80" Name="OrderNumberBlock" Style="{DynamicResource SectionSubHeaders}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+              <StackPanel Orientation="Vertical" Width="222" >
+                <TextBlock Name="StatusLine" Height="24" Margin="10,4,0,0" VerticalAlignment="Center" Foreground="Orange"/>
+                <ProgressBar Name="progressBar" Minimum="0" Height="20" Margin="10,4,10,4"/>
+              </StackPanel>
+            </StackPanel>
+
+          </StackPanel>
+
+          <extensionClasses:MerlinButton ImageSource="..\Resources/Icons/synchronize-48.png" Content="Sync" IsDefault="True" 
+                                         x:Name="searchButton" Style="{DynamicResource LargeButton}" 
+                                         Margin="24,4,4,4" Click="Sync_Click" />
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="64,0,0,0">
+            <extensionClasses:MerlinButton ImageSource="..\Resources/Icons/checked_2-48.png" Content="I'm finished" 
+                                           Style="{DynamicResource LargeButton}" Margin="4" Click="Accept_Click"/>
+            <extensionClasses:MerlinButton ImageSource="..\Resources/Icons/cancel_2-48.png" Content="Cancel" IsCancel="True" 
+                                           Style="{DynamicResource LargeButton}" Margin="24,4,4,4" Click="Cancel_Click"/>
+          </StackPanel>
+          <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="60,0,0,0">
+            <extensionClasses:MerlinButton ImageSource="..\Resources/Icons/chevron_up-48.png" ToolTip="Rotate Merlin Data Up One Site Code (02 -> 01)"
+                                           Style="{DynamicResource NoTextNarrowButton}" Margin="4,16,4,0" Click="Up_Click"/>
+            <extensionClasses:MerlinButton ImageSource="..\Resources/Icons/chevron_down-48.png" ToolTip="Rotate Merlin Data Down One Site Code (01 -> 02)" 
+                                           Style="{DynamicResource NoTextNarrowButton}" Margin="4,10,4,0" Click="Down_Click"/>
+          </StackPanel>
+        </StackPanel>
+        <TextBlock Text="Project Specifics:" Style="{DynamicResource SectionHeaders}"/>
+        <ListView x:Name="SyncPanel" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="490"
+                  ItemsSource="{Binding siteCodeRows}" HorizontalContentAlignment="Stretch" >
+          <ListView.ItemContainerStyle>
+            <Style TargetType="ListViewItem">
+              <Setter Property="Height" Value="30" />
+              <Setter Property="Focusable" Value="False" />
+              <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            </Style>
+          </ListView.ItemContainerStyle>
+          <ListView.Resources>
+            <DataTemplate x:Key="TimeBoxTemplate">
+              <ComboBox VerticalAlignment="Center" ItemsSource="{Binding Source={StaticResource ComboBoxValues}}"
+                  SelectedItem="{Binding Path=CurrentTimeChoice, Mode=OneWay}" IsEnabled="{Binding TimeMatch, Mode=OneWay}">
+              </ComboBox>
+            </DataTemplate>
+            <DataTemplate x:Key="StreetBoxTemplate">
+              <ComboBox VerticalAlignment="Center" ItemsSource="{Binding Source={StaticResource ComboBoxValues}}"
+                  SelectedItem="{Binding Path=CurrentStreetChoice, Mode=OneWay}" IsEnabled="{Binding StreetMatch, Mode=OneWay}">
+              </ComboBox>
+            </DataTemplate>
+          </ListView.Resources>
+          <ListView.View>
+            <GridView>
+              <GridViewColumn Header="Status" Width="50" >
+                <GridViewColumn.CellTemplate>
+                  <DataTemplate>
+                    <Image Source="{Binding Light}" Height="24"/>
+                  </DataTemplate>
+                </GridViewColumn.CellTemplate>
+              </GridViewColumn>
+              <GridViewColumn Header="Site Code" Width="70" >
+                <GridViewColumn.CellTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding SiteCode, Mode=OneWay}" Foreground="Black" Margin="4,2" HorizontalAlignment="Center"/>
+                </DataTemplate>
+                </GridViewColumn.CellTemplate>
+              </GridViewColumn>
+              <GridViewColumn Width="2" >
+                <GridViewColumn.CellTemplate>
+                  <DataTemplate>
+                    <Border BorderThickness="1,0,0,0" BorderBrush="Black" Margin="-6,0,-6,0">
+                      <TextBlock VerticalAlignment="Center"/>
+                    </Border>
+                  </DataTemplate>
+                </GridViewColumn.CellTemplate>
+              </GridViewColumn>
+              <GridViewColumn Header="Web Time" Width="100">
+                <GridViewColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Web.TimePeriod.CountTime, Mode=OneWay}" Foreground="{Binding TPBrush}" Margin="4,2" HorizontalAlignment="Center"/>
+                  </DataTemplate>
+                </GridViewColumn.CellTemplate>
+              </GridViewColumn>
+              <GridViewColumn Header="Web NS Street" Width="200">
+                <GridViewColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Path=Web.Location.NSStreet, Mode=OneWay}" Foreground="{Binding NSBrush}" Margin="4,2" HorizontalAlignment="Center"/>
+                  </DataTemplate>
+                </GridViewColumn.CellTemplate>
+              </GridViewColumn>
+              <GridViewColumn Header="Web EW Street" Width="200">
+                <GridViewColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Path=Web.Location.EWStreet, Mode=OneWay}" Foreground="{Binding EWBrush}" Margin="4,2" HorizontalAlignment="Center"/>
+                  </DataTemplate>
+                </GridViewColumn.CellTemplate>
+              </GridViewColumn>
+              <GridViewColumn Header="Time Choice" Width="80" CellTemplate="{StaticResource TimeBoxTemplate}" />
+              <GridViewColumn Header="Street Choice" Width="80" CellTemplate="{StaticResource StreetBoxTemplate}" />
+              <GridViewColumn Header="Merlin Time" Width="100">
+                <GridViewColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Merlin.TimePeriod.CountTime, Mode=OneWay}" Foreground="{Binding TPBrush}" Margin="4,2" HorizontalAlignment="Center"/>
+                  </DataTemplate>
+                </GridViewColumn.CellTemplate>
+              </GridViewColumn>
+              <GridViewColumn Header="Merlin NS Street" Width="200">
+                <GridViewColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Path=Merlin.Location.NSStreet, Mode=OneWay}" Foreground="{Binding NSBrush}" Margin="4,2" HorizontalAlignment="Center"/>
+                  </DataTemplate>
+                </GridViewColumn.CellTemplate>
+              </GridViewColumn>
+              <GridViewColumn Header="Merlin EW Street" Width="200">
+                <GridViewColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Path=Merlin.Location.EWStreet, Mode=OneWay}" Foreground="{Binding EWBrush}" Margin="4,2" HorizontalAlignment="Center"/>
+                  </DataTemplate>
+                </GridViewColumn.CellTemplate>
+              </GridViewColumn>
+            </GridView>
+          </ListView.View>
+        </ListView>
+      </StackPanel>
+    </StackPanel>
+  </Grid>
+</Window>

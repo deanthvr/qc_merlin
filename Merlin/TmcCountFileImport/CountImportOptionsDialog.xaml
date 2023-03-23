@@ -1,0 +1,56 @@
+﻿<Window x:Class="Merlin.TmcCountFileImport.CountImportOptionsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:extensionClasses="clr-namespace:Merlin.ExtensionClasses"
+        Icon="..\Resources\Sample Logo\merlin-light-blue-no-text.ico"
+        Title="Count Import Parameters" Height="240" Width="590"
+        ResizeMode="CanResize" ShowInTaskbar="True" WindowStartupLocation="Manual" Left="170" Top="95">
+  <Grid>
+    <StackPanel Margin="2,4">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="150" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="32"/>
+          <RowDefinition Height="32"/>
+          <RowDefinition Height="76"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=searchDirectory}" FontWeight="Bold" VerticalContentAlignment="Center">
+          <Run Text="Search Directory:"/>
+        </Label>
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
+          <TextBox x:Name="searchDirectory" Style="{DynamicResource DirectoryTextBox}" VerticalContentAlignment="Center" TextChanged="filePath_TextChanged" extensionClasses:SelectTextOnFocus.Active="True"/>
+          <extensionClasses:MerlinButton Style="{DynamicResource BrowseButton}" ToolTip="Browse for this directory" 
+                                         ImageSource="../Resources/Icons/search-48.png" x:Name="browseButton" Click="browseButton_Click"/>
+        </StackPanel>
+        <Label Grid.Row="1" Grid.Column="0" Target="{Binding ElementName=searchDays}" FontWeight="Bold" VerticalContentAlignment="Center">
+          <Run Text="Days Back to Search:"/>
+        </Label>
+        <TextBox Grid.Row="1" Grid.Column="1" x:Name="searchDays" Height="28" Width="30" VerticalContentAlignment="Center" HorizontalAlignment="Left" LostFocus="searchDays_LostFocus" extensionClasses:SelectTextOnFocus.Active="True"/>
+        <Label Grid.Row="2" Grid.Column="0" Target="{Binding ElementName=conflictMethod}" FontWeight="Bold" VerticalContentAlignment="Top">
+          <Run Text="Data Conflict Resolution Method:"/>
+        </Label>
+        <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="1" x:Name="conflictMethod">
+          <RadioButton x:Name ="option1" GroupName="conflictOption" Content="I want to help with every count." Margin="4,4" Style="{DynamicResource RadioButtonBaseStyle}"/>
+          <RadioButton x:Name ="option2" GroupName="conflictOption" Content="Only alert me when there is a data conflict." Margin="4,4" Style="{DynamicResource RadioButtonBaseStyle}"/>
+          <RadioButton x:Name ="option3" GroupName="conflictOption" Content="Don't alert me, just do your best." Margin="4,4" Style="{DynamicResource RadioButtonBaseStyle}"/>
+        </StackPanel>
+      </Grid>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+        <StackPanel Orientation="Vertical" Width="400">
+          <TextBlock x:Name="dirErrorMessage" Height="24"/>
+          <TextBlock x:Name="daysErrorMessage" Height="24"/>
+        </StackPanel>
+        <Grid Width="50" />
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+          <extensionClasses:MerlinButton ToolTip="File Search" IsDefault="True" Content="Search" 
+                                         ImageSource="..\Resources\Icons\search_property-48.png" Margin="4,4" Click="fileSearch_Click"/>
+          <extensionClasses:MerlinButton ToolTip="Cancel Search" IsCancel="True" Content="Cancel" 
+                                         ImageSource="..\Resources\Icons\cancel_2-48.png" Margin="4,4,10,4" Click="cancel_Click"/>
+        </StackPanel>
+      </StackPanel>
+    </StackPanel>
+  </Grid>
+</Window>

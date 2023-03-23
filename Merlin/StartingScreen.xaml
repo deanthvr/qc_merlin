@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="Merlin.StartingScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" Height="600" Width="512">
+  <Grid Name="mainGrid">
+    <DockPanel LastChildFill="True">
+      <Image Source="Resources\Sample Logo\merlin-light-blue-512x512.png" VerticalAlignment="Top" HorizontalAlignment="Center" Stretch="None" DockPanel.Dock="Top"/>
+      <StackPanel Orientation="Vertical" Width="256" >
+        <Button Name="newScratch" Content="New Project From Scratch" Height="44" Background="#FF5CC2EA" FontFamily="AR ESSENCE" FontSize="20"/>
+        <Button Name="newQCWeb" Content="New Project From Web" Height="44" Background="#FF5CC2EA" FontFamily="AR ESSENCE" FontSize="20"/>
+      </StackPanel>
+      <Button Name="open" Content="Open Project" Width="256" Background="#FF5CC2EA" FontFamily="AR ESSENCE" FontSize="20"/>
+    </DockPanel>
+    <!--<Image Source="Resources/turkey.png" Stretch="Uniform" Width="510" RenderOptions.BitmapScalingMode="Fant" Margin="1,-27,1,27" />-->
+    <!--<Image Source="Resources/cap-147417_640.png" Stretch="Uniform" Width="350" RenderOptions.BitmapScalingMode="Fant" Margin="175,-156,-13,156" >
+      <Image.RenderTransform>
+        <TransformGroup>
+          <RotateTransform Angle="-11.056"/>
+        </TransformGroup>
+      </Image.RenderTransform>
+    </Image>-->
+
+  </Grid>
+</UserControl>

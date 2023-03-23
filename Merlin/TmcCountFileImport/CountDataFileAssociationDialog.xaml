@@ -1,0 +1,57 @@
+﻿<Window x:Class="Merlin.TmcCountFileImport.CountDataFileAssociationDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:countFileImport="clr-namespace:Merlin.TmcCountFileImport"
+        xmlns:extensionClasses="clr-namespace:Merlin.ExtensionClasses"
+        Icon="..\Resources\Sample Logo\merlin-light-blue-no-text.ico"
+        ResizeMode="CanResize"  ShowInTaskbar="True"
+        Title="Count Files Management" Height="590" Width="915" MinWidth="915" MaxWidth="915" WindowStartupLocation="Manual" Left="170" Top="75">
+  <Window.Resources>
+    <countFileImport:ValueConverter x:Key="ValueConverter"></countFileImport:ValueConverter>
+  </Window.Resources>
+
+  <DockPanel ScrollViewer.VerticalScrollBarVisibility="Auto">
+    <DockPanel DockPanel.Dock="Bottom">
+      <extensionClasses:MerlinButton x:Name="removeFileButton" ToolTip="Remove File" Content="Remove" DockPanel.Dock="Left"
+                                        ImageSource="..\Resources/Icons/delete-48.png" Margin="4,4" Click="RemoveFile_Click"/>
+      <extensionClasses:MerlinButton ToolTip="Add More Files" Content="Add" DockPanel.Dock="Left"
+                                        ImageSource="..\Resources/Icons/add_list-48.png" Margin="4,4" Click="AddMoreFiles_Click"/>
+      <extensionClasses:MerlinButton ToolTip="Cancel Search" IsCancel="True" Content="Cancel" DockPanel.Dock="Right"
+                                        ImageSource="..\Resources\Icons\cancel_2-48.png" Margin="4,4" Click="Cancel_Click"/>
+      <extensionClasses:MerlinButton ToolTip="Import Data from these Files" IsDefault="True" Content="Next" DockPanel.Dock="Right"
+                                        ImageSource="..\Resources/Icons/export-48.png" Margin="4,4" Click="Next_Click"/>
+      <TextBlock x:Name="messageBlock" MinWidth="500" Margin="4,4" VerticalAlignment="Center"/>
+    </DockPanel>
+    <ListView x:Name="fileListView" ItemsSource="{DynamicResource Files}" 
+                SelectionChanged="FileListSelection_Changed" PreviewKeyDown="Key_Down"
+                ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+      <ListView.View>
+        <GridView>
+          <GridViewColumn Header="Files Found" DisplayMemberBinding="{Binding Key}" Width="625"/>
+          <GridViewColumn Header="Associated Count"  Width="185" >
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <TextBox x:Name="siteCode" Text="{Binding Value.Item1, Mode=OneWay}" Style="{DynamicResource ListBoxItemStyle}" 
+                            TextChanged="SiteCode_Changed" />
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+          <GridViewColumn Header="Approach" Width="65">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <TextBox x:Name="approach" Text="{Binding Value.Item2, Mode=OneWay}" Style="{DynamicResource approachStyle}" 
+                            Loaded="ApproachTextBox_Loaded" TextChanged="Approach_Changed" />
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+        </GridView>
+      </ListView.View>
+      <ListView.ItemContainerStyle>
+        <Style TargetType="ListViewItem">
+          <Setter Property="Height" Value="28" />
+        </Style>
+      </ListView.ItemContainerStyle>
+    </ListView>
+  </DockPanel>
+</Window>

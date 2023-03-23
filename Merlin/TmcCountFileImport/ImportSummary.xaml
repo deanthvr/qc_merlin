@@ -1,0 +1,52 @@
+﻿<Window x:Class="Merlin.TmcCountFileImport.ImportSummary"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:countFileImport="clr-namespace:Merlin.TmcCountFileImport"
+        xmlns:extensionClasses="clr-namespace:Merlin.ExtensionClasses"
+        Icon="..\Resources\Sample Logo\merlin-light-blue-no-text.ico"
+        ResizeMode="CanResize" ShowInTaskbar="True"
+        Title="Import Summary" Height="590" Width="1200" WindowStartupLocation="Manual" Left="170" Top="75">
+  
+  <Grid>
+    <StackPanel Orientation="Vertical" ScrollViewer.VerticalScrollBarVisibility="Auto">
+      <TextBlock Text="Merlin Logged the Following Notes During Batch Import:" HorizontalAlignment="Center" Style="{DynamicResource SectionHeaders}"
+                 Margin="0,8"/>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+        <ListView x:Name="logListView" Height="465" ItemsSource="{DynamicResource Log}"
+                  SelectionChanged="LogListSelection_Changed" PreviewKeyDown="Key_Down"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+          <ListView.View>
+            <GridView>
+              <GridViewColumn Header="File" DisplayMemberBinding="{Binding Value.Value}" Width="225">
+                <GridViewColumn.HeaderContainerStyle>
+                  <Style TargetType="GridViewColumnHeader">
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                  </Style>
+                </GridViewColumn.HeaderContainerStyle>
+              </GridViewColumn>
+              <GridViewColumn Header="Note" DisplayMemberBinding="{Binding Key}" Width="940" >
+                <GridViewColumn.HeaderContainerStyle>
+                  <Style TargetType="GridViewColumnHeader">
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                  </Style>
+                </GridViewColumn.HeaderContainerStyle>
+              </GridViewColumn>
+            </GridView>
+          </ListView.View>
+          <ListView.ItemContainerStyle>
+            <Style TargetType="ListViewItem">
+              <Setter Property="Height" Value="28" />
+              <Setter Property="ToolTip" Value="{Binding Value.Key}" />
+            </Style>
+          </ListView.ItemContainerStyle>
+        </ListView>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="4,0">
+          <extensionClasses:MerlinButton ToolTip="Finished with this Count" IsDefault="True" Content="Finish"
+                                               ImageSource="..\Resources\Icons\checked_2-48.png" Margin="4,4" Click="Finished_Click"/>
+        </StackPanel>
+      </StackPanel>
+    </StackPanel>
+  </Grid>
+</Window>

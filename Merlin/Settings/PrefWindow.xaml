@@ -1,0 +1,298 @@
+﻿<Window x:Class="Merlin.Settings.PrefWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:extensionClasses="clr-namespace:Merlin.ExtensionClasses"
+        Icon="..\Resources\Sample Logo\merlin-light-blue-no-text.ico"
+        Title="Merlin Settings"  Height="560" Width="890" 
+        ResizeMode="NoResize" ShowInTaskbar="True" WindowStartupLocation="Manual" Left="70" Top="95">
+  <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+  </Window.Resources>
+
+  <Grid>
+    <StackPanel Orientation="Vertical">
+      <TextBlock x:Name="PreferencesMessage" Height="26" HorizontalAlignment="Center"/>
+      <StackPanel Orientation="Horizontal" Height="175" VerticalAlignment="Top">
+        <StackPanel Orientation="Vertical">
+          <TextBlock Style="{DynamicResource SettingsWindowHeaders}" Text="Directories"/>
+          <Grid Margin="6,0,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition />
+              <ColumnDefinition Width="20"/>
+              <ColumnDefinition />
+              <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="20"/>
+              <RowDefinition Height="26"/>
+              <RowDefinition Height="26"/>
+              <RowDefinition Height="26"/>
+              <RowDefinition Height="26"/>
+              <RowDefinition Height="26"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="Local Path" FontWeight="Bold" HorizontalAlignment="Center" FontSize="14" VerticalAlignment="Bottom"/>
+            <TextBlock Grid.Row="0" Grid.Column="3" Text="Network Path" FontWeight="Bold" HorizontalAlignment="Center" FontSize="14" VerticalAlignment="Bottom"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Project Files:"/>
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="directoryProject" Style="{DynamicResource DirectoryTextBox}" TextChanged="Directory_Changed" Tag="local" extensionClasses:SelectTextOnFocus.Active="True"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Count Data Files:"/>
+            <TextBox Grid.Row="2" Grid.Column="1" x:Name="directoryDataFiles" Style="{DynamicResource DirectoryTextBox}" TextChanged="Directory_Changed" Tag="local" extensionClasses:SelectTextOnFocus.Active="True"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Exported ASCII Files:" />
+            <TextBox Grid.Row="3" Grid.Column="1" x:Name="directoryASCII" Style="{DynamicResource DirectoryTextBox}" TextChanged="Directory_Changed" Tag="local" extensionClasses:SelectTextOnFocus.Active="True"/>
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="QC Conversion Location:  " />
+            <TextBox Grid.Row="4" Grid.Column="1" x:Name="directoryQCConversion" Style="{DynamicResource DirectoryTextBox}" TextChanged="Directory_Changed" Tag="local" extensionClasses:SelectTextOnFocus.Active="True"/>
+            <TextBox Grid.Row="1" Grid.Column="3" x:Name="ndirectoryProject" Style="{DynamicResource DirectoryTextBox}" TextChanged="Directory_Changed" Tag="network" extensionClasses:SelectTextOnFocus.Active="True"/>
+            <TextBox Grid.Row="2" Grid.Column="3" x:Name="ndirectoryDataFiles" Style="{DynamicResource DirectoryTextBox}" TextChanged="Directory_Changed" Tag="network" extensionClasses:SelectTextOnFocus.Active="True"/>
+            <TextBox Grid.Row="3" Grid.Column="3" x:Name="ndirectoryASCII" Style="{DynamicResource DirectoryTextBox}" TextChanged="Directory_Changed" Tag="network" extensionClasses:SelectTextOnFocus.Active="True"/>
+            <TextBox Grid.Row="4" Grid.Column="3" x:Name="ndirectoryQCConversion" Style="{DynamicResource DirectoryTextBox}" TextChanged="Directory_Changed" Tag="network" extensionClasses:SelectTextOnFocus.Active="True"/>
+            <extensionClasses:MerlinButton Style="{DynamicResource BrowseButton}" Grid.Row="1" Grid.Column="2" Click="Browse_Click"
+                                           ToolTip="Browse for this directory" ImageSource="../Resources/Icons/search-48.png"
+                                           x:Name="directoryProjectButton"/>
+            <extensionClasses:MerlinButton Style="{DynamicResource BrowseButton}" Grid.Row="2" Grid.Column="2" Click="Browse_Click"
+                                           ToolTip="Browse for this directory" ImageSource="../Resources/Icons/search-48.png"
+                                           x:Name="directoryDataFilesButton"/>
+            <extensionClasses:MerlinButton Style="{DynamicResource BrowseButton}" Grid.Row="3" Grid.Column="2" Click="Browse_Click"
+                                           ToolTip="Browse for this directory" ImageSource="../Resources/Icons/search-48.png"
+                                           x:Name="directoryASCIIButton"/>
+            <extensionClasses:MerlinButton Style="{DynamicResource BrowseButton}" Grid.Row="4" Grid.Column="2" Click="Browse_Click"
+                                           ToolTip="Browse for this directory" ImageSource="../Resources/Icons/search-48.png"
+                                           x:Name="directoryQCConversionButton"/>
+            <extensionClasses:MerlinButton Style="{DynamicResource BrowseButton}" Grid.Row="1" Grid.Column="4" Click="Browse_Click"
+                                           ToolTip="Browse for this directory" ImageSource="../Resources/Icons/search-48.png"
+                                           x:Name="ndirectoryProjectButton"/>
+            <extensionClasses:MerlinButton Style="{DynamicResource BrowseButton}" Grid.Row="2" Grid.Column="4" Click="Browse_Click"
+                                           ToolTip="Browse for this directory" ImageSource="../Resources/Icons/search-48.png"
+                                           x:Name="ndirectoryDataFilesButton"/>
+            <extensionClasses:MerlinButton Style="{DynamicResource BrowseButton}" Grid.Row="3" Grid.Column="4" Click="Browse_Click"
+                                           ToolTip="Browse for this directory" ImageSource="../Resources/Icons/search-48.png"
+                                           x:Name="ndirectoryASCIIButton"/>
+            <extensionClasses:MerlinButton Style="{DynamicResource BrowseButton}" Grid.Row="4" Grid.Column="4" Click="Browse_Click"
+                                           ToolTip="Browse for this directory" ImageSource="../Resources/Icons/search-48.png" 
+                                           x:Name="ndirectoryQCConversionButton"/>
+            <TextBlock x:Name="localError" Grid.Row="5" Grid.Column="1" />
+            <TextBlock x:Name="networkError" Grid.Row="5" Grid.Column="3" />
+          </Grid>
+        </StackPanel>
+      </StackPanel>
+      <Separator/>
+      <StackPanel Orientation="Horizontal">
+        <TabControl Width="610" Margin="4,2,0,0">
+          <TabItem x:Name="universalFlagThresholds" >
+            <TabItem.Header>
+              <TextBlock Text="TMC Flag Thresholds" Style="{DynamicResource SectionSubSubHeaders}"/>
+            </TabItem.Header>
+            <StackPanel Orientation="Vertical">
+              <Grid Height="12"/>
+              <StackPanel Orientation="Horizontal">
+                <Grid Margin="4,0,0,0" HorizontalAlignment="Stretch">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                  </Grid.RowDefinitions>
+                  <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=lowIntervalPercent}"  ToolTip="">Percent Below Interval Average [Decimal]:</Label>
+                  <TextBox Grid.Row="0" Grid.Column="1" x:Name="lowIntervalPercent" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="1" Grid.Column="0" Target="{Binding ElementName=highIntervalPercent}" >Percent Above Interval Average [Decimal]:</Label>
+                  <TextBox Grid.Row="1" Grid.Column="1" x:Name="highIntervalPercent" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="2" Grid.Column="0" Target="{Binding ElementName=highIntervalMin}"  ToolTip="When the movement total per hour is lower than this figure, the interval average test will not be run.">Interval Test Minimum Per Hour:</Label>
+                  <TextBox Grid.Row="2" Grid.Column="1" x:Name="intervalMin" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="3" Grid.Column="0" Target="{Binding ElementName=lowMoveVolPercent}"  ToolTip="When the average volume per hour for a given movement is lower than the average for the movement between time periods by this amount, a flag is thrown.(Percent)">Time Period Low Comparison [Decimal]:</Label>
+                  <TextBox Grid.Row="3" Grid.Column="1" x:Name="lowMoveVolPercent" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="4" Grid.Column="0" Target="{Binding ElementName=highMoveVolPercent}"  ToolTip="When the average volume per hour for a given movement is higher than the average for the movement between time periods by this amount, a flag is thrown. (Percent)">Time Period High Comparison [Decimal]:</Label>
+                  <TextBox Grid.Row="4" Grid.Column="1" x:Name="highMoveVolPercent" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="5" Grid.Column="0" Target="{Binding ElementName=moveVolMin}"  ToolTip="When the average volume per hour is lower than this, the test will not be run for the given movement.">Time Period Test Minimum Per Hour:</Label>
+                  <TextBox Grid.Row="5" Grid.Column="1" x:Name="moveVolMin" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                </Grid>
+                <Grid Width="25"/>
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                  </Grid.RowDefinitions>
+                  <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=lowHeaviesPercent}"  ToolTip="">Heavy Vehicle Low Percent of Total [Decimal]:</Label>
+                  <TextBox Grid.Row="0" Grid.Column="1" x:Name="lowHeaviesPercent" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="1" Grid.Column="0" Target="{Binding ElementName=highHeaviesPercent}" >Heavy Vehicle High Percent of Total [Decimal]:</Label>
+                  <TextBox Grid.Row="1" Grid.Column="1" x:Name="highHeaviesPercent" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="2" Grid.Column="0" Target="{Binding ElementName=highHeaviesMin}" ToolTip="When the movement total per hour is lower than this figure, the heavies test will not be run.">Heavies Test Minimum Per Hour:</Label>
+                  <TextBox Grid.Row="2" Grid.Column="1" x:Name="heaviesMin" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="4" Grid.Column="0" Target="{Binding ElementName=timePeriodPercent}" 
+                     ToolTip="The acceptable difference between approach ratios across the AM and PM peak time periods">AM/PM Peak Approach Ratio Diff [Decimal]:</Label>
+                  <TextBox Grid.Row="4" Grid.Column="1" x:Name="timePeriodPercent" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                </Grid>
+              </StackPanel>
+            </StackPanel>
+          </TabItem>
+          <TabItem>
+            <TabItem.Header>
+              <TextBlock Text="TCC Flag Thresholds" Style="{DynamicResource SectionSubSubHeaders}"/>
+            </TabItem.Header>
+            <StackPanel Orientation="Vertical">
+              <TextBlock Text="Class % Difference Thresholds" Style="{DynamicResource SectionSubSubHeaders}"  
+                         ToolTip="Merlin will evaluatethe percentage of classification in various blocks of data (count, hour, file-source).
+                         \nWhen the difference between the data block and the key is greater than the below difference, the data block will be flagged.
+                         \n Example: Project Class 2%: 35%, Count 01 Class 2%: 40%, FHWA Class 2 % THreshold: 4(%) --> Results in flag "/>
+              <StackPanel Orientation="Horizontal">
+                <Grid Margin="4,0,0,0" HorizontalAlignment="Stretch">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                  </Grid.RowDefinitions>
+                  <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=fhwa1Threshold}" >FHWA Class 1 [%]:</Label>
+                  <TextBox Grid.Row="0" Grid.Column="1" x:Name="fhwa1Threshold" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="1" Grid.Column="0" Target="{Binding ElementName=fhwa2Threshold}" >FHWA Class 2 [%]:</Label>
+                  <TextBox Grid.Row="1" Grid.Column="1" x:Name="fhwa2Threshold" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="2" Grid.Column="0" Target="{Binding ElementName=fhwa3Threshold}" >FHWA Class 3 [%]:</Label>
+                  <TextBox Grid.Row="2" Grid.Column="1" x:Name="fhwa3Threshold" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="3" Grid.Column="0" Target="{Binding ElementName=fhwa4Threshold}" >FHWA Class 4 [%]:</Label>
+                  <TextBox Grid.Row="3" Grid.Column="1" x:Name="fhwa4Threshold" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="4" Grid.Column="0" Target="{Binding ElementName=fhwa5Threshold}" >FHWA Class 5 [%]:</Label>
+                  <TextBox Grid.Row="4" Grid.Column="1" x:Name="fhwa5Threshold" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="5" Grid.Column="0" Target="{Binding ElementName=fhwa6Threshold}" >FHWA Class 6 [%]:</Label>
+                  <TextBox Grid.Row="5" Grid.Column="1" x:Name="fhwa6Threshold" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                </Grid>
+                <Grid Width="45"/>
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                  </Grid.RowDefinitions>
+                  <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=fhwa7Threshold}" >FHWA Class 7 [%]:</Label>
+                  <TextBox Grid.Row="0" Grid.Column="1" x:Name="fhwa7Threshold" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="1" Grid.Column="0" Target="{Binding ElementName=fhwa8Threshold}" >FHWA Class 8 [%]:</Label>
+                  <TextBox Grid.Row="1" Grid.Column="1" x:Name="fhwa8Threshold" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="2" Grid.Column="0" Target="{Binding ElementName=fhwa9Threshold}" >FHWA Class 9 [%]:</Label>
+                  <TextBox Grid.Row="2" Grid.Column="1" x:Name="fhwa9Threshold" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="3" Grid.Column="0" Target="{Binding ElementName=fhwa10Threshold}" >FHWA Class 10 [%]:</Label>
+                  <TextBox Grid.Row="3" Grid.Column="1" x:Name="fhwa10Threshold" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="4" Grid.Column="0" Target="{Binding ElementName=fhwa11Threshold}" >FHWA Class 11 [%]:</Label>
+                  <TextBox Grid.Row="4" Grid.Column="1" x:Name="fhwa11Threshold" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="5" Grid.Column="0" Target="{Binding ElementName=fhwa12Threshold}" >FHWA Class 12 [%]:</Label>
+                  <TextBox Grid.Row="5" Grid.Column="1" x:Name="fhwa12Threshold" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                </Grid>
+                <Grid Width="45"/>
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                  </Grid.RowDefinitions>
+                  <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=fhwa13Threshold}" >FHWA Class 13 [%]:</Label>
+                  <TextBox Grid.Row="0" Grid.Column="1" x:Name="fhwa13Threshold" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                  <Label Grid.Row="2" Grid.Column="0" Target="{Binding ElementName=fhwa6_13Threshold}" >FHWA Classwa 6-13 [%]:</Label>
+                  <TextBox Grid.Row="2" Grid.Column="1" x:Name="fhwa6_13Threshold" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+                </Grid>
+              </StackPanel>
+            </StackPanel>
+          </TabItem>
+        </TabControl>
+        <StackPanel Orientation="Vertical">
+          <Grid Height="28" />
+          <TextBlock Style="{DynamicResource SettingsWindowHeaders}" Text="Miscellaneous"/>
+          <Grid Margin="4,0,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="26"/>
+              <RowDefinition Height="26"/>
+              <RowDefinition Height="15"/>
+              <RowDefinition Height="26"/>
+              <RowDefinition Height="21"/>
+              <RowDefinition Height="26"/>
+              <RowDefinition Height="16"/>
+              <RowDefinition Height="26"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=daysToSearch}" ToolTip="Days back to search for data files from current day">Days Back to Search:</Label>
+            <TextBox Grid.Row="0" Grid.Column="1" x:Name="daysToSearch" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+            <Label Grid.Row="1" Grid.Column="0" Target="{Binding ElementName=balancingDiff}"  ToolTip="When two neighboring intersections are off by higher than this percent, they will be colored red">Balancing % Threshold [Decimal]:</Label>
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="balancingDiff" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+
+            <Separator Grid.Row="2" Grid.ColumnSpan="2" Background="{DynamicResource ButtonBorderColor}" />
+            <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" LastChildFill="True">
+              <Label Target="{Binding ElementName=selectedDataSourceComboBox}" DockPanel.Dock="Left" ToolTip="Choose the QC data source to connect to for importing project data">Data Source:</Label>
+              <ComboBox ToolTip="The QC data source to connect to" x:Name="selectedDataSourceComboBox" Style="{DynamicResource RoundedAll}" SelectedValuePath="Key" DisplayMemberPath="Value"/>
+            </DockPanel>
+            <Label Grid.Row="4" Grid.Column="0" Target="{Binding ElementName=userNameTextBox}"  ToolTip="QC web user name is used for authentication to import project data from QC's data API" Margin="0,0,0,-5">QC Web User Name</Label>
+            <TextBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Width="Auto" x:Name="userNameTextBox" Style="{DynamicResource NumberTextBox}" extensionClasses:SelectTextOnFocus.Active="True"/>
+            <DockPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" LastChildFill="True">
+              <CheckBox x:Name="updatePwdCheckBox" DockPanel.Dock="Right" Margin="4,0,2,0" VerticalAlignment="Stretch"/>
+              <Label Target="{Binding ElementName=pwdPasswordBox}"  ToolTip="Checking the box will apply the password entered below." Margin="0,-5,-7,-5" Content="Update" DockPanel.Dock="Right"/>
+              <Label Target="{Binding ElementName=pwdPasswordBox}"  ToolTip="QC web password is used for authentication to import project data from QC's data service. When the Update box is checked, the password entered below will be applied." Margin="0,-5" Content="QC Web Password"/>
+            </DockPanel>
+            <TextBlock x:Name="pwdTextBlock" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Margin="4,-3,2,2" Text="••••••" FontSize="20">
+              <TextBlock.Style>
+                <Style>
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding ElementName=updatePwdCheckBox, Path=IsChecked}" Value="True">
+                      <Setter Property="TextBlock.Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ElementName=tupdatePwdCheckBoxab3, Path=IsChecked}" Value="False">
+                      <Setter Property="TextBlock.Visibility" Value="Visible" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </TextBlock.Style>
+            </TextBlock>
+            <PasswordBox x:Name="pwdPasswordBox" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Margin="2" extensionClasses:SelectTextOnFocus.Active="True" 
+                         Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=updatePwdCheckBox}"/>
+          </Grid>
+        </StackPanel>
+      </StackPanel>
+      <TextBlock x:Name="windowErrorMessage" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+      <Grid Height="6"/>
+      <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
+        <extensionClasses:MerlinButton ToolTip="Restore Saved Defaults" Style="{DynamicResource WideButton}"
+                                       Content="Load Defaults" ImageSource="..\Resources\Icons\copy-48.png" Margin="4,4" 
+                                       Click="RestoreDefault_Click" x:Name="loadDefaultsButton"/>
+        <extensionClasses:MerlinButton ToolTip="Save for this Project" Style="{DynamicResource WideButton}"
+                                       Content="Save &amp; Close" ImageSource="..\Resources\Icons\save-48.png" Margin="4,4"
+                                       Click="SaveProject_Click" x:Name="saveForProjectButton"/>
+        <extensionClasses:MerlinButton ToolTip="Make current settings the default" Style="{DynamicResource WideButton}"
+                                       Content="Set As Default" ImageSource="..\Resources\Icons\christmas_star-48.png" Margin="4,4" 
+                                       Click="SetDefault_Click" x:Name="setAsDefaultButton"/>
+        <extensionClasses:MerlinButton ToolTip="Close window and discard changes" IsCancel="True" Style="{DynamicResource WideButton}"
+                                       Content="Cancel" ImageSource="..\Resources\Icons\cancel_2-48.png" Margin="4,4" 
+                                       Click="Cancel_Click" x:Name="cancelButton"/>
+      </StackPanel>
+    </StackPanel>
+  </Grid>
+</Window>

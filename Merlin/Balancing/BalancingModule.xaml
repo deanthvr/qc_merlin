@@ -1,0 +1,64 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:CustomizeLocationsWindow="clr-namespace:Merlin.CustomizeLocationsWindow" x:Class="Merlin.BalancingModule" 
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="200">
+  <UserControl.Resources>
+
+  </UserControl.Resources>
+  <Grid Name="mainGrid">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="50"/>
+      <ColumnDefinition Width="100"/>
+      <ColumnDefinition Width="50"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="50"/>
+      <RowDefinition Height="100"/>
+      <RowDefinition Height="50"/>
+    </Grid.RowDefinitions>
+    <!--<CustomizeLocationsWindow:IntersectionConfig x:Name="diagram" Grid.Column="1" Grid.Row="1" IsEnabled="False"/>-->
+
+    <Viewbox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" StretchDirection="DownOnly" Stretch="Fill" VerticalAlignment="Bottom" Height="30" Margin="0,0,0,20">
+      <TextBlock Name="LocationTitle" Width="200" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Bottom">
+        <Underline>
+          Brandon Blvd and I-75 SB Ramps
+        </Underline>
+      </TextBlock>
+    </Viewbox>
+
+    <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Panel.ZIndex="1">
+      <TextBlock Text="Loc 1" Name="locationNumber" FontWeight="Bold" TextAlignment="Center"/>
+      <TextBlock Text="11/23" Name="locationDate" FontStyle="Italic" Foreground="White" TextAlignment="Center"/>
+    </StackPanel>
+
+    <TextBlock Text="322" Name="SB_Entering_Numbers" Width="45" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" TextAlignment="Right" ContextMenuOpening="ConnectionTextBlock_ContextMenuOpening"/>
+    <TextBlock Text="656" Name="NB_Exiting_Numbers" Width="45" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" TextAlignment="Left" ContextMenuOpening="ConnectionTextBlock_ContextMenuOpening"/>
+
+    <TextBlock Text="1875" Name="SB_Exiting_Numbers" Width="45" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Right" ContextMenuOpening="ConnectionTextBlock_ContextMenuOpening"/>
+    <TextBlock Text="948" Name="NB_Entering_Numbers" Width="45" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" ContextMenuOpening="ConnectionTextBlock_ContextMenuOpening"/>
+
+    <TextBlock Text="1537" Name="WB_Exiting_Numbers" Width="49" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Right" Margin="0,30,1,0" ContextMenuOpening="ConnectionTextBlock_ContextMenuOpening"/>
+    <TextBlock Text="783" Name="EB_Entering_Numbers" Width="49" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" TextAlignment="Right" Margin="0,0,1,30" ContextMenuOpening="ConnectionTextBlock_ContextMenuOpening"/>
+
+    <TextBlock Text="893" Name="WB_Entering_Numbers" Width="49" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Left" Margin="1,30,0,0" ContextMenuOpening="ConnectionTextBlock_ContextMenuOpening"/>
+    <TextBlock Text="1023" Name="EB_Exiting_Numbers" Width="49" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" TextAlignment="Left" Margin="1,0,0,30" ContextMenuOpening="ConnectionTextBlock_ContextMenuOpening"/>
+
+    <TextBlock Text="11/24" Name="SB_Entering_Date" Width="45" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Right" Foreground="White" TextDecorations="{x:Null}" FontStyle="Italic" Panel.ZIndex="1"/>
+    <TextBlock Text="11/25" Name="NB_Exiting_Date" Width="45" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" Foreground="White" TextDecorations="{x:Null}" FontStyle="Italic" Panel.ZIndex="1"/>
+
+    <TextBlock Text="11/26" Name="SB_Exiting_Date" Width="45" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" TextAlignment="Right" Foreground="White" TextDecorations="{x:Null}" FontStyle="Italic" Panel.ZIndex="1"/>
+    <TextBlock Text="11/27" Name="NB_Entering_Date" Width="45" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" TextAlignment="Left" Foreground="White" TextDecorations="{x:Null}" FontStyle="Italic" Panel.ZIndex="1"/>
+
+    <TextBlock Text="11/28" Name="WB_Entering_Date" Width="49" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Right" Margin="0,30,1,0" Foreground="White" TextDecorations="{x:Null}" FontStyle="Italic" Panel.ZIndex="1"/>
+    <TextBlock Text="11/29" Name="EB_Exiting_Date" Width="49" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" TextAlignment="Right" Margin="0,0,1,30" Foreground="White" TextDecorations="{x:Null}" FontStyle="Italic" Panel.ZIndex="1"/>
+
+    <TextBlock Text="11/30" Name="WB_Exiting_Date" Width="49" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Left" Margin="1,30,0,0" Foreground="White" TextDecorations="{x:Null}" FontStyle="Italic" Panel.ZIndex="1"/>
+    <TextBlock Text="12/1" Name="EB_Entering_Date" Width="49" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" TextAlignment="Left" Margin="1,0,0,30" Foreground="White" TextDecorations="{x:Null}" FontStyle="Italic" Panel.ZIndex="1"/>
+
+
+  </Grid>
+</UserControl>
